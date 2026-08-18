@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GODMADE | Creative Photography Studio</title>
+<meta name="description" content="GODMADE — Bold, cinematic photography and creative direction.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Main Stylesheet -->
+<link rel="stylesheet" href="style.css">
+
+<!-- CHANGE FAVICON HERE -->
+<link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+
+<!-- ============================= -->
+<!-- PRELOADER -->
+<!-- ============================= -->
+<div id="preloader">
+  <div class="preloader-logo">GOD<span>MADE</span></div>
+</div>
+
+<!-- ============================= -->
+<!-- NAVIGATION -->
+<!-- ============================= -->
+<header id="header" class="header">
+  <nav class="navbar container">
+    <a href="#home" class="logo">GOD<span>MADE</span></a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" class="nav-link active">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#services" class="nav-link">Services</a></li>
+      <li><a href="#gallery" class="nav-link">Gallery</a></li>
+      <li><a href="#testimonials" class="nav-link">Reviews</a></li>
+      <li><a href="#booking" class="nav-link">Booking</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+
+    <a href="#booking" class="btn btn-nav">Book Now</a>
+
+    <!-- Mobile Hamburger -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+</header>
+
+<!-- ============================= -->
+<!-- HERO SECTION -->
+<!-- ============================= -->
+<section id="home" class="hero">
+  <!-- CHANGE HERO IMAGE HERE -->
+  <div class="hero-bg" style="background-image: url('images/hero.jpg');"></div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content container">
+    <p class="hero-subtitle reveal-up">CREATIVE PHOTOGRAPHY STUDIO</p>
+    <h1 class="hero-title reveal-up">
+      WE CAPTURE MOMENTS<br>
+      <span class="text-outline">MADE BY GOD</span>
+    </h1>
+    <p class="hero-desc reveal-up">
+      Cinematic visuals, bold storytelling, and unforgettable frames —
+      crafted for people and brands who want to be remembered.
+    </p>
+    <div class="hero-buttons reveal-up">
+      <a href="#gallery" class="btn btn-primary">View Gallery</a>
+      <a href="#booking" class="btn btn-outline">Book a Session</a>
+    </div>
+  </div>
+
+  <a href="#about" class="scroll-down" aria-label="Scroll Down">
+    <i class="fa-solid fa-chevron-down"></i>
+  </a>
+</section>
+
+<!-- ============================= -->
+<!-- ABOUT SECTION -->
+<!-- ============================= -->
+<section id="about" class="about section">
+  <div class="container about-grid">
+    <div class="about-images reveal-left">
+      <!-- CHANGE GODMADE PHOTO HERE -->
+      <img src="image-1.jpeg" alt="GODMADE Photographer" class="about-img-main">
+      <!-- CHANGE ABOUT SECONDARY IMAGE HERE -->
+      <img src="images/about-02.jpg" alt="GODMADE Studio" class="about-img-secondary">
+    </div>
+
+    <div class="about-content reveal-right">
+      <p class="section-tag">ABOUT GODMADE</p>
+      <h2 class="section-title">Every Frame Tells<br>A Divine Story</h2>
+      <p class="about-text">
+        GODMADE is a creative photography studio built on passion, precision, and purpose.
+        We specialize in portrait, event, and brand photography that goes beyond the click —
+        we craft visuals that carry emotion, energy, and identity.
+      </p>
+      <p class="about-text">
+        From intimate portraits to large scale productions, every project we touch is
+        treated as a piece of art made with intention.
+      </p>
+
+      <div class="about-stats">
+        <div class="stat-box">
+          <h3 class="counter" data-target="450">0</h3>
+          <p>Projects Completed</p>
+        </div>
+        <div class="stat-box">
+          <h3 class="counter" data-target="120">0</h3>
+          <p>Happy Clients</p>
+        </div>
+        <div class="stat-box">
+          <h3 class="counter" data-target="8">0</h3>
+          <p>Years Experience</p>
+        </div>
+      </div>
+
+      <a href="#booking" class="btn btn-primary">Work With Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= -->
+<!-- SERVICES SECTION -->
+<!-- ============================= -->
+<section id="services" class="services section">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-tag center">WHAT WE OFFER</p>
+      <h2 class="section-title center">Our Services</h2>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card reveal-up">
+        <div class="service-icon"><i class="fa-solid fa-camera-retro"></i></div>
+        <h3>Portrait Photography</h3>
+        <p>Studio and outdoor portrait sessions crafted to highlight your true identity and personality.</p>
+      </div>
+
+      <div class="service-card reveal-up">
+        <div class="service-icon"><i class="fa-solid fa-champagne-glasses"></i></div>
+        <h3>Event Coverage</h3>
+        <p>Weddings, parties, and corporate events documented with cinematic precision and emotion.</p>
+      </div>
+
+      <div class="service-card reveal-up">
+        <div class="service-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <h3>Brand & Commercial</h3>
+        <p>High-impact visuals for brands, products, and campaigns that demand attention.</p>
+      </div>
+
+      <div class="service-card reveal-up">
+        <div class="service-icon"><i class="fa-solid fa-film"></i></div>
+        <h3>Videography</h3>
+        <p>Cinematic short films, reels, and promotional videos shot and edited to perfection.</p>
+      </div>
+
+      <div class="service-card reveal-up">
+        <div class="service-icon"><i class="fa-solid fa-palette"></i></div>
+        <h3>Creative Direction</h3>
+        <p>Full concept development, styling, and art direction for editorial and campaign shoots.</p>
+      </div>
+
+      <div class="service-card reveal-up">
+        <div class="service-icon"><i class="fa-solid fa-image"></i></div>
+        <h3>Photo Editing</h3>
+        <p>Professional retouching and color grading that gives every image its final GODMADE touch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= -->
+<!-- GALLERY SECTION -->
+<!-- ============================= -->
+<section id="gallery" class="gallery section">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-tag center">OUR PORTFOLIO</p>
+      <h2 class="section-title center">Gallery</h2>
+    </div>
+
+    <!-- Gallery Filter Buttons -->
+    <div class="gallery-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="portrait">Portrait</button>
+      <button class="filter-btn" data-filter="event">Events</button>
+      <button class="filter-btn" data-filter="brand">Brand</button>
+      <button class="filter-btn" data-filter="creative">Creative</button>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-grid" id="galleryGrid">
+      <!-- CHANGE ARTWORK IMAGE HERE -->
+      <div class="gallery-item" data-category="portrait">
+        <img src="images/photo-01.jpg" alt="GODMADE Photography 01">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Portrait Session</p>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="event">
+        <img src="images/photo-02.jpg" alt="GODMADE Photography 02">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Wedding Coverage</p>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="brand">
+        <img src="images/photo-03.jpg" alt="GODMADE Photography 03">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Brand Campaign</p>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="creative">
+        <img src="images/photo-04.jpg" alt="GODMADE Photography 04">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Creative Concept</p>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="portrait">
+        <img src="images/photo-05.jpg" alt="GODMADE Photography 05">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Studio Portrait</p>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="event">
+        <img src="images/photo-06.jpg" alt="GODMADE Photography 06">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Corporate Event</p>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="brand">
+        <img src="images/photo-07.jpg" alt="GODMADE Photography 07">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Product Shoot</p>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="creative">
+        <img src="images/photo-08.jpg" alt="GODMADE Photography 08">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Editorial Shoot</p>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="portrait">
+        <img src="images/photo-09.jpg" alt="GODMADE Photography 09">
+        <div class="gallery-overlay">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <p>Portrait Series</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= -->
+<!-- LIGHTBOX MODAL -->
+<!-- ============================= -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
+  <img src="" alt="Enlarged Photo" class="lightbox-img" id="lightboxImg">
+  <button class="lightbox-next" id="lightboxNext" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
+  <p class="lightbox-caption" id="lightboxCaption"></p>
+</div>
+
+<!-- ============================= -->
+<!-- AUTOMATIC SLIDESHOW -->
+<!-- ============================= -->
+<section class="slideshow-section section">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-tag center">FEATURED WORK</p>
+      <h2 class="section-title center">Moments In Motion</h2>
+    </div>
+  </div>
+
+  <div class="slideshow-container">
+    <div class="slides-wrapper" id="slidesWrapper">
+      <!-- CHANGE SLIDESHOW IMAGE HERE -->
+      <div class="slide"><img src="images/slide-01.jpg" alt="GODMADE Slide 1"></div>
+      <div class="slide"><img src="images/slide-02.jpg" alt="GODMADE Slide 2"></div>
+      <div class="slide"><img src="images/slide-03.jpg" alt="GODMADE Slide 3"></div>
+      <div class="slide"><img src="images/slide-04.jpg" alt="GODMADE Slide 4"></div>
+      <div class="slide"><img src="images/slide-05.jpg" alt="GODMADE Slide 5"></div>
+    </div>
+
+    <button class="slide-btn slide-prev" id="slidePrev" aria-label="Previous Slide"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="slide-btn slide-next" id="slideNext" aria-label="Next Slide"><i class="fa-solid fa-chevron-right"></i></button>
+
+    <div class="slide-dots" id="slideDots"></div>
+  </div>
+</section>
+
+<!-- ============================= -->
+<!-- TESTIMONIALS SECTION -->
+<!-- ============================= -->
+<section id="testimonials" class="testimonials section">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-tag center">CLIENT LOVE</p>
+      <h2 class="section-title center">What They Say</h2>
+    </div>
+
+    <div class="testimonial-slider" id="testimonialSlider">
+      <div class="testimonial-card active">
+        <p class="testimonial-text">"GODMADE captured our wedding better than we ever imagined. Every photo feels like a painting. Truly divine work."</p>
+        <div class="testimonial-author">
+          <!-- CHANGE CLIENT PHOTO HERE -->
+          <img src="images/client-01.jpg" alt="Client 1">
+          <div>
+            <h4>Amara Chukwu</h4>
+            <span>Wedding Client</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <p class="testimonial-text">"Professional, creative, and incredibly talented. Our brand shoot exceeded every expectation. Highly recommend GODMADE."</p>
+        <div class="testimonial-author">
+          <img src="images/client-02.jpg" alt="Client 2">
+          <div>
+            <h4>David Okafor</h4>
+            <span>Brand Client</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <p class="testimonial-text">"From the first consultation to the final delivery, the entire experience felt premium. My portraits are stunning."</p>
+        <div class="testimonial-author">
+          <img src="images/client-03.jpg" alt="Client 3">
+          <div>
+            <h4>Zainab Bello</h4>
+            <span>Portrait Client</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-dots" id="testimonialDots"></div>
+  </div>
+</section>
+
+<!-- ============================= -->
+<!-- BOOKING FORM SECTION -->
+<!-- ============================= -->
+<section id="booking" class="booking section">
+  <div class="container booking-grid">
+    <div class="booking-info reveal-left">
+      <p class="section-tag">GET STARTED</p>
+      <h2 class="section-title">Book Your Session</h2>
+      <p class="about-text">
+        Fill out the form and our team will get back to you within 24 hours to
+        confirm your session details and answer any questions.
+      </p>
+
+      <ul class="booking-list">
+        <li><i class="fa-solid fa-check"></i> Fast response within 24 hours</li>
+        <li><i class="fa-solid fa-check"></i> Flexible scheduling options</li>
+        <li><i class="fa-solid fa-check"></i> Custom packages available</li>
+        <li><i class="fa-solid fa-check"></i> Professional editing included</li>
+      </ul>
+
+      <div class="booking-contact">
+        <p><i class="fa-solid fa-phone"></i> +234 800 000 0000</p>
+        <p><i class="fa-solid fa-envelope"></i> hello@godmade.studio</p>
+      </div>
+    </div>
+
+    <form id="bookingForm" class="booking-form reveal-right">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fullName">Full Name *</label>
+          <input type="text" id="fullName" name="fullName" placeholder="Your full name" required>
+          <span class="error-message" id="error-fullName"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+          <span class="error-message" id="error-email"></span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input type="tel" id="phone" name="phone" placeholder="+234 800 000 0000" required>
+          <span class="error-message" id="error-phone"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="service">Service Needed *</label>
+          <select id="service" name="service" required>
+            <option value="">Select a service</option>
+            <option value="Portrait Photography">Portrait Photography</option>
+            <option value="Event Coverage">Event Coverage</option>
+            <option value="Brand & Commercial">Brand & Commercial</option>
+            <option value="Videography">Videography</option>
+            <option value="Creative Direction">Creative Direction</option>
+            <option value="Photo Editing">Photo Editing</option>
+          </select>
+          <span class="error-message" id="error-service"></span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="eventDate">Preferred Date *</label>
+          <input type="date" id="eventDate" name="eventDate" required>
+          <span class="error-message" id="error-eventDate"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="budget">Estimated Budget</label>
+          <select id="budget" name="budget">
+            <option value="">Select budget range</option>
+            <option value="Under ₦100,000">Under ₦100,000</option>
+            <option value="₦100,000 - ₦300,000">₦100,000 - ₦300,000</option>
+            <option value="₦300,000 - ₦600,000">₦300,000 - ₦600,000</option>
+            <option value="Above ₦600,000">Above ₦600,000</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Project Details *</label>
+        <textarea id="message" name="message" rows="5" placeholder="Tell us more about your project, location, and vision..." required></textarea>
+        <span class="error-message" id="error-message"></span>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+        <span id="submitBtnText">Send Booking Request</span>
+        <span id="submitSpinner" class="spinner hidden"></span>
+      </button>
+
+      <div id="formSuccess" class="form-alert form-success hidden">
+        <i class="fa-solid fa-circle-check"></i>
+        Your booking request has been sent successfully! We'll be in touch soon.
+      </div>
+
+      <div id="formError" class="form-alert form-error hidden">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        Something went wrong while sending your request. Please try again or contact us directly.
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============================= -->
+<!-- CONTACT / CTA SECTION -->
+<!-- ============================= -->
+<section id="contact" class="cta section">
+  <div class="container cta-content">
+    <h2 class="section-title center">Let's Create Something<br><span class="text-outline">GODMADE</span></h2>
+    <p class="cta-text">Ready to bring your vision to life? Reach out and let's talk about your next project.</p>
+
+    <div class="cta-socials">
+      <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+      <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+    </div>
+
+    <a href="#booking" class="btn btn-primary">Book Your Session Now</a>
+  </div>
+</section>
+
+<!-- ============================= -->
+<!-- FOOTER -->
+<!-- ============================= -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <a href="#home" class="logo">GOD<span>MADE</span></a>
+      <p>Bold, cinematic photography and creative direction for people and brands who want to be remembered.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#booking">Booking</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Portrait Photography</a></li>
+        <li><a href="#services">Event Coverage</a></li>
+        <li><a href="#services">Brand & Commercial</a></li>
+        <li><a href="#services">Videography</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><i class="fa-solid fa-location-dot"></i> Lagos, Nigeria</li>
+        <li><i class="fa-solid fa-phone"></i> +234 800 000 0000</li>
+        <li><i class="fa-solid fa-envelope"></i> hello@godmade.studio</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <span id="currentYear"></span> GODMADE Studio. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<!-- Back to Top -->
+<button id="backToTop" class="back-to-top" aria-label="Back to top">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<!-- ============================= -->
+<!-- EMAILJS CDN -->
+<!-- ============================= -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<!-- Main JavaScript -->
+<script src="script.js"></script>
+</body>
+</html>
