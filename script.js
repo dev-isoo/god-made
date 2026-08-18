@@ -1,4 +1,4 @@
-/* =====================================================
+ /* =====================================================
    GODMADE — MAIN JAVASCRIPT
 ===================================================== */
 
@@ -380,13 +380,16 @@ document.addEventListener('DOMContentLoaded', () => {
      2. Create a Service, Template, and get your Public Key
      3. Replace the three placeholder values below
   --------------------------------------------- */
-  const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
-  const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
-  const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+  const EMAILJS_SERVICE_ID = "service_a3mzsfu";
+  const EMAILJS_TEMPLATE_ID = "template_b9psr17";
+  const EMAILJS_PUBLIC_KEY = "LYx2n5rRPA_vBzza5";
 
   // Initialize EmailJS
   if (window.emailjs) {
     emailjs.init(EMAILJS_PUBLIC_KEY);
+    console.log("GODMADE: EmailJS library loaded and initialized successfully.");
+  } else {
+    console.warn("GODMADE: EmailJS library was NOT found on this page. Check that the EmailJS <script> tag is in index.html, placed BEFORE script.js, and that you have an internet connection.");
   }
 
   const bookingForm = document.getElementById('bookingForm');
@@ -508,16 +511,20 @@ document.addEventListener('DOMContentLoaded', () => {
         EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY";
 
       if (!window.emailjs || !credentialsSet) {
-        // EmailJS not configured yet — show helpful message in console
-        console.warn(
-          "GODMADE: EmailJS credentials are not set yet. " +
-          "Open script.js and replace EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, and EMAILJS_PUBLIC_KEY."
-        );
+        // Figure out the REAL reason so the on-page message is actually useful
+        let reason = "";
+        if (!window.emailjs) {
+          reason = "The EmailJS library did not load. Check that the EmailJS <script> tag is in index.html, placed BEFORE script.js, and that you have an internet connection.";
+        } else {
+          reason = "EmailJS credentials are missing in script.js. Replace EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, and EMAILJS_PUBLIC_KEY with your real values.";
+        }
+
+        console.warn("GODMADE: " + reason);
+
         setTimeout(() => {
           setSubmitLoading(false);
           formError.classList.remove('hidden');
-          formError.querySelector('i').nextSibling.textContent =
-            " EmailJS is not configured yet. Please add your credentials in script.js.";
+          formError.querySelector('i').nextSibling.textContent = " " + reason;
         }, 600);
         return;
       }
@@ -542,6 +549,8 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error('EmailJS Error:', err);
           setSubmitLoading(false);
           formError.classList.remove('hidden');
+          formError.querySelector('i').nextSibling.textContent =
+            " EmailJS failed to send: " + (err && err.text ? err.text : "Please check your Service ID, Template ID, and Public Key are correct, and that the service is connected in your EmailJS dashboard.");
           formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
     });
