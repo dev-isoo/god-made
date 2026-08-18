@@ -526,12 +526,11 @@ button {
   flex-wrap: wrap;
   margin-bottom: 50px;
 }
-
-.filter-btn {
+ .filter-btn {
   padding: 10px 24px;
-  border: 1px solid var(--color-border);
+  border: 1px solid #7c5df5;
   border-radius: 30px;
-  color: var(--color-text-muted);
+  color: #a99bf0;
   font-size: 0.85rem;
   font-weight: 500;
   transition: all var(--transition);
@@ -539,9 +538,9 @@ button {
 
 .filter-btn:hover,
 .filter-btn.active {
-  background: var(--color-gold);
-  color: #0a0a0a;
-  border-color: var(--color-gold);
+  background: linear-gradient(90deg, #7c5df5 0%, #de7130 100%);
+  color: #ffffff;
+  border-color: transparent;
 }
 
 .gallery-grid {
@@ -981,25 +980,25 @@ button {
   margin-bottom: 40px;
 }
 
-.cta-socials a {
+ .cta-socials a {
   width: 46px;
   height: 46px;
-  border: 1px solid var(--color-border);
+  border: 1px solid #7c5df5;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
+  color: #a99bf0;
   transition: all var(--transition);
 }
 
 .cta-socials a:hover {
-  background: var(--color-gold);
-  color: #0a0a0a;
-  border-color: var(--color-gold);
+  background: linear-gradient(90deg, #7c5df5 0%, #de7130 100%);
+  color: #ffffff;
+  border-color: transparent;
   transform: translateY(-4px);
 }
-
 /* ---------- FOOTER ---------- */
 .footer {
   background: var(--color-bg-alt);
