@@ -237,70 +237,556 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================================================
      AUTOMATIC MOVING SLIDESHOW
   ================================================ */
-  const slidesWrapper = document.getElementById('slidesWrapper');
-  const slides = document.querySelectorAll('.slide');
-  const slideDotsContainer = document.getElementById('slideDots');
-  const slidePrevBtn = document.getElementById('slidePrev');
-  const slideNextBtn = document.getElementById('slideNext');
+ /* =====================================================
+   GODMADE — FEATURED FRAMES
+   HORIZONTAL CAROUSEL + STORY MODAL
+===================================================== */
 
-  let currentSlide = 0;
-  let slideInterval;
-  const SLIDE_DURATION = 4500;
+const framesTrack = document.getElementById("framesTrack");
+const frameCards = document.querySelectorAll(".frame-card");
 
-  // Build dots
-  slides.forEach((_, index) => {
-    const dot = document.createElement('div');
-    dot.classList.add('dot');
-    if (index === 0) dot.classList.add('active');
-    dot.addEventListener('click', () => {
-      goToSlide(index);
-      resetSlideInterval();
+const framesPrev = document.getElementById("framesPrev");
+const framesNext = document.getElementById("framesNext");
+
+const frameModal = document.getElementById("frameModal");
+const frameModalOverlay = document.getElementById("frameModalOverlay");
+const frameModalClose = document.getElementById("frameModalClose");
+
+const modalFrameImage = document.getElementById("modalFrameImage");
+const modalFrameName = document.getElementById("modalFrameName");
+const modalFrameDescription = document.getElementById("modalFrameDescription");
+const modalFramePrice = document.getElementById("modalFramePrice");
+
+const buyFrameBtn = document.getElementById("buyFrameBtn");
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+let currentFrame = 0;
+
+let frameTimer = null;
+
+const FRAME_INTERVAL = 3500;
+
+
+/* =====================================================
+   CHECK EVERYTHING EXISTS
+===================================================== */
+
+if (
+  framesTrack &&
+  frameCards.length > 0 &&
+  framesPrev &&
+  framesNext
+) {
+
+
+  /* ===================================================
+     GET CARD WIDTH
+  =================================================== */
+
+  function getCardWidth() {
+
+    const card = frameCards[0];
+
+    const styles = window.getComputedStyle(framesTrack);
+
+    const gap = parseFloat(styles.columnGap || styles.gap) || 0;
+
+    return card.offsetWidth + gap;
+  }
+
+
+  /* ===================================================
+     GET HOW MANY CARDS CAN BE SHOWN
+  =================================================== */
+
+  function getVisibleCards() {
+
+    const container =
+      document.querySelector(".frames-track-container");
+
+    if (!container) {
+      return 1;
+    }
+
+    return Math.max(
+      1,
+      Math.floor(
+        container.offsetWidth / getCardWidth()
+      )
+    );
+  }
+
+
+  /* ===================================================
+     GET MAXIMUM POSITION
+  =================================================== */
+
+  function getMaxPosition() {
+
+    return Math.max(
+      0,
+      frameCards.length - getVisibleCards()
+    );
+  }
+
+
+  /* ===================================================
+     MOVE CAROUSEL
+  =================================================== */
+
+  function updateCarousel() {
+
+    const maxPosition = getMaxPosition();
+
+    if (currentFrame > maxPosition) {
+      currentFrame = 0;
+    }
+
+    if (currentFrame < 0) {
+      currentFrame = maxPosition;
+    }
+
+    const distance =
+      currentFrame * getCardWidth();
+
+    framesTrack.style.transform =
+      `translateX(-${distance}px)`;
+  }
+
+
+  /* ===================================================
+     NEXT
+  =================================================== */
+
+  function nextFrame() {
+
+    const maxPosition = getMaxPosition();
+
+    currentFrame++;
+
+    if (currentFrame > maxPosition) {
+      currentFrame = 0;
+    }
+
+    updateCarousel();
+  }
+
+
+  /* ===================================================
+     PREVIOUS
+  =================================================== */
+
+  function previousFrame() {
+
+    const maxPosition = getMaxPosition();
+
+    currentFrame--;
+
+    if (currentFrame < 0) {
+      currentFrame = maxPosition;
+    }
+
+    updateCarousel();
+  }
+
+
+  /* ===================================================
+     ARROW BUTTONS
+  =================================================== */
+
+  framesNext.addEventListener("click", function () {
+
+    nextFrame();
+
+    restartFrameTimer();
+
+  });
+
+
+  framesPrev.addEventListener("click", function () {
+
+    previousFrame();
+
+    restartFrameTimer();
+
+  });
+
+
+  /* ===================================================
+     AUTOMATIC SLIDESHOW
+  =================================================== */
+
+  function startFrameTimer() {
+
+    stopFrameTimer();
+
+    frameTimer = setInterval(
+      nextFrame,
+      FRAME_INTERVAL
+    );
+
+  }
+
+
+  function stopFrameTimer() {
+
+    if (frameTimer) {
+
+      clearInterval(frameTimer);
+
+      frameTimer = null;
+
+    }
+
+  }
+
+
+  function restartFrameTimer() {
+
+    stopFrameTimer();
+
+    startFrameTimer();
+
+  }
+
+
+  /* ===================================================
+     PAUSE WHEN MOUSE IS OVER CAROUSEL
+  =================================================== */
+
+  const framesCarousel =
+    document.querySelector(".frames-carousel");
+
+
+  if (framesCarousel) {
+
+    framesCarousel.addEventListener(
+      "mouseenter",
+      stopFrameTimer
+    );
+
+    framesCarousel.addEventListener(
+      "mouseleave",
+      startFrameTimer
+    );
+
+  }
+
+
+  /* ===================================================
+     OPEN FRAME STORY
+  =================================================== */
+
+  frameCards.forEach(function (card) {
+
+    card.addEventListener("click", function () {
+
+      const name =
+        card.dataset.name || "GODMADE Original";
+
+
+      const price =
+        Number(card.dataset.price || 0);
+
+
+      const image =
+        card.dataset.image ||
+        card.querySelector("img")?.src;
+
+
+      const description =
+        card.dataset.description ||
+        "Every picture tells a story.";
+
+
+      /* -----------------------------------------------
+         PUT DATA INTO MODAL
+      ------------------------------------------------ */
+
+      modalFrameName.textContent = name;
+
+      modalFrameDescription.textContent =
+        description;
+
+      modalFramePrice.textContent =
+        `₦${price.toLocaleString("en-NG")}`;
+
+
+      modalFrameImage.src = image;
+
+      modalFrameImage.alt = name;
+
+
+      /* -----------------------------------------------
+         SAVE SELECTED FRAME
+      ------------------------------------------------ */
+
+      buyFrameBtn.dataset.frame =
+        name;
+
+      buyFrameBtn.dataset.price =
+        price;
+
+
+      /* -----------------------------------------------
+         OPEN MODAL
+      ------------------------------------------------ */
+
+      frameModal.classList.add("active");
+
+      document.body.style.overflow = "hidden";
+
+
+      /* Stop automatic movement */
+
+      stopFrameTimer();
+
     });
-    slideDotsContainer.appendChild(dot);
+
   });
 
-  const slideDots = document.querySelectorAll('.slide-dots .dot');
 
-  function goToSlide(index) {
-    currentSlide = (index + slides.length) % slides.length;
-    slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-    slideDots.forEach(d => d.classList.remove('active'));
-    slideDots[currentSlide].classList.add('active');
+  /* ===================================================
+     CLOSE MODAL
+  =================================================== */
+
+  function closeFrameModal() {
+
+    frameModal.classList.remove("active");
+
+    document.body.style.overflow = "";
+
+    startFrameTimer();
+
   }
 
-  function nextSlide() {
-    goToSlide(currentSlide + 1);
+
+  /* CLOSE BUTTON */
+
+  if (frameModalClose) {
+
+    frameModalClose.addEventListener(
+      "click",
+      closeFrameModal
+    );
+
   }
 
-  function prevSlide() {
-    goToSlide(currentSlide - 1);
+
+  /* CLOSE BY CLICKING DARK BACKGROUND */
+
+  if (frameModalOverlay) {
+
+    frameModalOverlay.addEventListener(
+      "click",
+      closeFrameModal
+    );
+
   }
 
-  function startSlideInterval() {
-    slideInterval = setInterval(nextSlide, SLIDE_DURATION);
+
+  /* ===================================================
+     ESC KEY
+  =================================================== */
+
+  document.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (
+        event.key === "Escape" &&
+        frameModal.classList.contains("active")
+      ) {
+
+        closeFrameModal();
+
+      }
+
+    }
+  );
+
+
+  /* ===================================================
+     BUY THIS FRAME
+  =================================================== */
+
+  if (buyFrameBtn) {
+
+    buyFrameBtn.addEventListener(
+      "click",
+      function () {
+
+        const selectedFrame =
+          buyFrameBtn.dataset.frame || "";
+
+
+        const selectedPrice =
+          buyFrameBtn.dataset.price || "";
+
+
+        /* ---------------------------------------------
+           SAVE FRAME
+        --------------------------------------------- */
+
+        localStorage.setItem(
+          "godmadeSelectedFrame",
+          selectedFrame
+        );
+
+
+        localStorage.setItem(
+          "godmadeSelectedFramePrice",
+          selectedPrice
+        );
+
+
+        /* ---------------------------------------------
+           PUT FRAME INTO BOOKING FORM
+        --------------------------------------------- */
+
+        const selectedFrameInput =
+          document.getElementById("selectedFrame");
+
+
+        if (selectedFrameInput) {
+
+          selectedFrameInput.value =
+            selectedFrame;
+
+        }
+
+
+        const selectedPriceInput =
+          document.getElementById(
+            "selectedFramePrice"
+          );
+
+
+        if (selectedPriceInput) {
+
+          selectedPriceInput.value =
+            `₦${Number(
+              selectedPrice
+            ).toLocaleString("en-NG")}`;
+
+        }
+
+
+        /* ---------------------------------------------
+           CLOSE MODAL
+        --------------------------------------------- */
+
+        closeFrameModal();
+
+
+        /* ---------------------------------------------
+           GO TO BOOKING
+        --------------------------------------------- */
+
+        const bookingSection =
+          document.getElementById("booking");
+
+
+        if (bookingSection) {
+
+          setTimeout(function () {
+
+            bookingSection.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+
+          }, 300);
+
+        } else {
+
+          console.warn(
+            "GODMADE: #booking section was not found."
+          );
+
+        }
+
+      }
+    );
+
   }
 
-  function resetSlideInterval() {
-    clearInterval(slideInterval);
-    startSlideInterval();
+
+  /* ===================================================
+     LOAD SAVED FRAME
+  =================================================== */
+
+  const savedFrame =
+    localStorage.getItem(
+      "godmadeSelectedFrame"
+    );
+
+
+  const savedPrice =
+    localStorage.getItem(
+      "godmadeSelectedFramePrice"
+    );
+
+
+  const selectedFrameInput =
+    document.getElementById(
+      "selectedFrame"
+    );
+
+
+  const selectedPriceInput =
+    document.getElementById(
+      "selectedFramePrice"
+    );
+
+
+  if (
+    selectedFrameInput &&
+    savedFrame
+  ) {
+
+    selectedFrameInput.value =
+      savedFrame;
+
   }
 
-  slideNextBtn.addEventListener('click', () => {
-    nextSlide();
-    resetSlideInterval();
-  });
 
-  slidePrevBtn.addEventListener('click', () => {
-    prevSlide();
-    resetSlideInterval();
-  });
+  if (
+    selectedPriceInput &&
+    savedPrice
+  ) {
 
-  startSlideInterval();
+    selectedPriceInput.value =
+      `₦${Number(
+        savedPrice
+      ).toLocaleString("en-NG")}`;
 
-  // Pause on hover
-  const slideshowContainer = document.querySelector('.slideshow-container');
-  slideshowContainer.addEventListener('mouseenter', () => clearInterval(slideInterval));
-  slideshowContainer.addEventListener('mouseleave', startSlideInterval);
+  }
+
+
+  /* ===================================================
+     RESIZE
+  =================================================== */
+
+  window.addEventListener(
+    "resize",
+    updateCarousel
+  );
+
+
+  /* ===================================================
+     START
+  =================================================== */
+
+  updateCarousel();
+
+  startFrameTimer();
+
+}
 
   /* ================================================
      TESTIMONIALS SLIDER

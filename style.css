@@ -752,6 +752,590 @@ button {
   border-radius: 6px;
 }
 
+/* =====================================================
+   GODMADE — FEATURED FRAMES CAROUSEL
+===================================================== */
+
+.frames-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.frames-subtitle {
+  text-align: center;
+  color: #999;
+  margin-top: 12px;
+}
+
+
+/* ================================
+   CAROUSEL
+================================ */
+
+.frames-carousel {
+  position: relative;
+  width: 100%;
+  margin-top: 50px;
+  padding: 0 70px;
+}
+
+.frames-track-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.frames-track {
+  display: flex;
+  gap: 22px;
+  width: max-content;
+
+  transform: translateX(0);
+
+  transition:
+    transform 0.7s cubic-bezier(.22,.61,.36,1);
+
+  will-change: transform;
+}
+
+
+/* ================================
+   FRAME CARD
+================================ */
+
+.frame-card {
+  flex: 0 0 300px;
+  width: 300px;
+
+  background: #111118;
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.frame-card:hover {
+  transform: translateY(-8px);
+
+  border-color: rgba(255,255,255,0.25);
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.4);
+}
+
+
+/* ================================
+   IMAGE
+================================ */
+
+.frame-image {
+  width: 100%;
+  height: 380px;
+
+  overflow: hidden;
+
+  background: #08080d;
+}
+
+.frame-image img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition:
+    transform 0.7s ease;
+}
+
+.frame-card:hover .frame-image img {
+  transform: scale(1.06);
+}
+
+
+/* ================================
+   INFO
+================================ */
+
+.frame-info {
+  padding: 22px;
+}
+
+.frame-info h3 {
+  margin: 0 0 8px;
+
+  color: #fff;
+
+  font-size: 21px;
+}
+
+.frame-info p {
+  margin: 0 0 18px;
+
+  color: #999;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+.frame-price {
+  display: inline-block;
+
+  color: #fff;
+
+  font-size: 18px;
+
+  font-weight: 700;
+}
+
+
+/* ================================
+   ARROWS
+================================ */
+
+.frames-arrow {
+  position: absolute;
+
+  top: 45%;
+
+  transform: translateY(-50%);
+
+  z-index: 10;
+
+  width: 52px;
+  height: 52px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255,255,255,0.2);
+
+  background: rgba(10,10,15,0.9);
+
+  color: #fff;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.frames-arrow:hover {
+  background: #fff;
+
+  color: #000;
+
+  transform:
+    translateY(-50%)
+    scale(1.08);
+}
+
+.frames-prev {
+  left: 15px;
+}
+
+.frames-next {
+  right: 15px;
+}
+
+
+/* ================================
+   MODAL
+================================ */
+
+.frame-modal {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 99999;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 25px;
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.frame-modal.active {
+  opacity: 1;
+
+  visibility: visible;
+
+  pointer-events: auto;
+}
+
+
+/* DARK BACKGROUND */
+
+.frame-modal-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    rgba(0,0,0,0.88);
+
+  backdrop-filter: blur(10px);
+
+  cursor: pointer;
+}
+
+
+/* ================================
+   MODAL CONTENT
+================================ */
+
+.frame-modal-content {
+  position: relative;
+
+  z-index: 2;
+
+  width: min(1000px, 95vw);
+
+  max-height: 90vh;
+
+  overflow: auto;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  background: #111118;
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  transform:
+    translateY(30px)
+    scale(0.96);
+
+  transition:
+    transform 0.35s ease;
+}
+
+.frame-modal.active .frame-modal-content {
+  transform:
+    translateY(0)
+    scale(1);
+}
+
+
+/* ================================
+   MODAL IMAGE
+================================ */
+
+.frame-modal-image {
+  min-height: 600px;
+
+  background: #050507;
+}
+
+.frame-modal-image img {
+  width: 100%;
+
+  height: 100%;
+
+  min-height: 600px;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+
+/* ================================
+   MODAL INFO
+================================ */
+
+.frame-modal-info {
+  padding: 55px 45px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+}
+
+.modal-label {
+  color: #999;
+
+  font-size: 12px;
+
+  letter-spacing: 3px;
+
+  font-weight: 700;
+
+  margin-bottom: 15px;
+}
+
+.frame-modal-info h2 {
+  color: #fff;
+
+  font-size: clamp(32px, 4vw, 52px);
+
+  line-height: 1.05;
+
+  margin: 0 0 15px;
+}
+
+.modal-story-intro {
+  color: #fff;
+
+  font-size: 18px;
+
+  font-weight: 600;
+
+  margin-bottom: 18px;
+}
+
+.modal-frame-description {
+  color: #aaa;
+
+  font-size: 16px;
+
+  line-height: 1.8;
+
+  margin-bottom: 30px;
+}
+
+.modal-price {
+  color: #fff;
+
+  font-size: 30px;
+
+  font-weight: 800;
+
+  margin-bottom: 30px;
+}
+
+
+/* ================================
+   BUY BUTTON
+================================ */
+
+.buy-frame-btn {
+  width: 100%;
+
+  min-height: 58px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  color: #000;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
+}
+
+.buy-frame-btn:hover {
+  background: #ddd;
+
+  transform: translateY(-3px);
+}
+
+
+/* ================================
+   CLOSE BUTTON
+================================ */
+
+.frame-modal-close {
+  position: absolute;
+
+  right: 18px;
+
+  top: 18px;
+
+  z-index: 10;
+
+  width: 44px;
+
+  height: 44px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255,255,255,0.2);
+
+  background: rgba(0,0,0,0.65);
+
+  color: #fff;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 18px;
+}
+
+.frame-modal-close:hover {
+  background: #fff;
+
+  color: #000;
+}
+
+
+/* ================================
+   TABLET
+================================ */
+
+@media (max-width: 900px) {
+
+  .frames-carousel {
+    padding: 0 55px;
+  }
+
+  .frame-card {
+    flex-basis: 270px;
+
+    width: 270px;
+  }
+
+  .frame-image {
+    height: 340px;
+  }
+
+  .frame-modal-content {
+    grid-template-columns: 1fr;
+  }
+
+  .frame-modal-image {
+    min-height: 400px;
+
+    height: 400px;
+  }
+
+  .frame-modal-image img {
+    min-height: 400px;
+  }
+
+  .frame-modal-info {
+    padding: 35px;
+  }
+
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 600px) {
+
+  .frames-carousel {
+    padding: 0 45px;
+  }
+
+  .frames-track {
+    gap: 15px;
+  }
+
+  .frame-card {
+    flex-basis: 250px;
+
+    width: 250px;
+  }
+
+  .frame-image {
+    height: 320px;
+  }
+
+  .frames-arrow {
+    width: 40px;
+
+    height: 40px;
+  }
+
+  .frames-prev {
+    left: 5px;
+  }
+
+  .frames-next {
+    right: 5px;
+  }
+
+  .frame-modal {
+    padding: 12px;
+  }
+
+  .frame-modal-content {
+    width: 100%;
+
+    max-height: 94vh;
+  }
+
+  .frame-modal-image {
+    height: 300px;
+
+    min-height: 300px;
+  }
+
+  .frame-modal-image img {
+    height: 300px;
+
+    min-height: 300px;
+  }
+
+  .frame-modal-info {
+    padding: 28px 22px;
+  }
+
+}
 /* ---------- TESTIMONIALS ---------- */
 .testimonial-slider {
   position: relative;
