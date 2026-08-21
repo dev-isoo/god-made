@@ -1,4 +1,4 @@
- import { auth, db, storage } from "./firebase-config.js";
+import { auth, db } from "../js/firebase-config.js";
 
 import {
     onAuthStateChanged,
@@ -11,17 +11,10 @@ import {
     getDocs,
     deleteDoc,
     doc,
-    serverTimestamp,
-    query,
-    orderBy
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-import {
-    ref,
-    uploadBytesResumable,
-    getDownloadURL,
-    deleteObject
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+
 
 
 // ======================================================
@@ -29,6 +22,11 @@ import {
 // ======================================================
 
 console.log("GODMADE admin.js loaded.");
+
+const CLOUDINARY_CLOUD_NAME = "ecd8rvtk";
+const CLOUDINARY_UPLOAD_PRESET = "photography_portfolio";
+const CLOUDINARY_UPLOAD_URL =
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 
 // ======================================================
@@ -368,308 +366,132 @@ if (frameForm) {
 
 
             try {
-
                 // ==================================================
-                // CREATE UNIQUE FILE NAME
+                // UPLOAD TO CLOUDINARY
                 // ==================================================
-
-                const timestamp =
-                    Date.now();
-
-                const random =
-                    Math.random()
-                        .toString(36)
-                        .substring(2, 9);
-
-
-                const extension =
-                    getFileExtension(file.name);
-
-
-                const fileName =
-                    `${timestamp}_${random}.${extension}`;
-
-
-                // ==================================================
-                // FIREBASE STORAGE PATH
-                // ==================================================
-
-                const storagePath =
-                    `frames/${fileName}`;
-
 
                 console.log(
-                    "Uploading to:",
-                    storagePath
+                    "Uploading image to Cloudinary..."
                 );
 
+                progressStatus.textContent =
+                    "Uploading image...";
 
-                const storageRef =
-                    ref(
-                        storage,
-                        storagePath
-                    );
+                const cloudinaryFormData =
+                    new FormData();
 
+                cloudinaryFormData.append(
+                    "file",
+                    file
+                );
 
-                // ==================================================
-                // START UPLOAD
-                // ==================================================
+                cloudinaryFormData.append(
+                    "upload_preset",
+                    CLOUDINARY_UPLOAD_PRESET
+                );
 
-                const uploadTask =
-                    uploadBytesResumable(
-                        storageRef,
-                        file,
+                cloudinaryFormData.append(
+                    "folder",
+                    "portfolio/frames"
+                );
+
+                const cloudinaryResponse =
+                    await fetch(
+                        CLOUDINARY_UPLOAD_URL,
                         {
-                            contentType: file.type
+                            method: "POST",
+                            body: cloudinaryFormData
                         }
                     );
 
-
-                uploadTask.on(
-
-                    "state_changed",
-
-                    // ------------------------------------------
-                    // PROGRESS
-                    // ------------------------------------------
-
-                    (snapshot) => {
-
-                        const percent =
-                            Math.round(
-                                (
-                                    snapshot.bytesTransferred /
-                                    snapshot.totalBytes
-                                ) * 100
-                            );
-
-
-                        console.log(
-                            "Upload:",
-                            percent + "%"
-                        );
-
-
-                        progressFill.style.width =
-                            percent + "%";
-
-
-                        progressPercent.textContent =
-                            percent + "%";
-
-
-                        progressStatus.textContent =
-                            "Uploading image...";
-
-                    },
-
-
-                    // ------------------------------------------
-                    // ERROR
-                    // ------------------------------------------
-
-                    (error) => {
-
-                        console.error(
-                            "Firebase Storage upload error:",
-                            error
-                        );
-
-
-                        uploadBtn.disabled =
-                            false;
-
-                        uploadBtn.textContent =
-                            "Upload & Add Frame";
-
-
-                        progressContainer.style.display =
-                            "none";
-
-
-                        showMessage(
-                            getFirebaseErrorMessage(error),
-                            "error"
-                        );
-
-                    },
-
-
-                    // ------------------------------------------
-                    // COMPLETE
-                    // ------------------------------------------
-
-                    async () => {
-
-                        try {
-
-                            console.log(
-                                "Image upload complete."
-                            );
-
-
-                            progressStatus.textContent =
-                                "Getting image URL...";
-
-
-                            // ==========================================
-                            // GET IMAGE URL
-                            // ==========================================
-
-                            const imageURL =
-                                await getDownloadURL(
-                                    uploadTask.snapshot.ref
-                                );
-
-
-                            console.log(
-                                "Image URL:",
-                                imageURL
-                            );
-
-
-                            // ==========================================
-                            // SAVE FRAME TO FIRESTORE
-                            // ==========================================
-
-                            progressStatus.textContent =
-                                "Saving frame...";
-
-
-                            const frameData = {
-
-                                name: name,
-
-                                price: price,
-
-                                tagline: tagline,
-
-                                description: description,
-
-                                imageURL: imageURL,
-
-                                storagePath: storagePath,
-
-                                createdAt:
-                                    serverTimestamp(),
-
-                                createdBy:
-                                    user.uid
-
-                            };
-
-
-                            const frameDoc =
-                                await addDoc(
-                                    collection(
-                                        db,
-                                        "frames"
-                                    ),
-                                    frameData
-                                );
-
-
-                            console.log(
-                                "Frame saved:",
-                                frameDoc.id
-                            );
-
-
-                            // ==========================================
-                            // SUCCESS
-                            // ==========================================
-
-                            progressFill.style.width =
-                                "100%";
-
-                            progressPercent.textContent =
-                                "100%";
-
-                            progressStatus.textContent =
-                                "Complete!";
-
-
-                            showMessage(
-                                "✅ Frame uploaded successfully!",
-                                "success"
-                            );
-
-
-                            // ==========================================
-                            // RESET FORM
-                            // ==========================================
-
-                            frameForm.reset();
-
-
-                            selectedFile.textContent =
-                                "No image selected";
-
-
-                            previewImage.src =
-                                "";
-
-
-                            imagePreview.style.display =
-                                "none";
-
-
-                            // ==========================================
-                            // RELOAD FRAMES
-                            // ==========================================
-
-                            await loadFrames();
-
-
-                            // ==========================================
-                            // RESET BUTTON
-                            // ==========================================
-
-                            setTimeout(() => {
-
-                                uploadBtn.disabled =
-                                    false;
-
-                                uploadBtn.textContent =
-                                    "Upload & Add Frame";
-
-                                progressContainer.style.display =
-                                    "none";
-
-                                progressFill.style.width =
-                                    "0%";
-
-                            }, 1500);
-
-                        } catch (error) {
-
-                            console.error(
-                                "Error saving frame:",
-                                error
-                            );
-
-
-                            uploadBtn.disabled =
-                                false;
-
-                            uploadBtn.textContent =
-                                "Upload & Add Frame";
-
-
-                            progressContainer.style.display =
-                                "none";
-
-
-                            showMessage(
-                                getFirebaseErrorMessage(error),
-                                "error"
-                            );
-
-                        }
-
-                    }
-
+                if (!cloudinaryResponse.ok) {
+                    const errorText =
+                        await cloudinaryResponse.text();
+
+                    throw new Error(
+                        `Cloudinary upload failed: ${errorText}`
+                    );
+                }
+
+                const cloudinaryData =
+                    await cloudinaryResponse.json();
+
+                const imageURL =
+                    cloudinaryData.secure_url;
+
+                const cloudinaryPublicId =
+                    cloudinaryData.public_id;
+
+                console.log(
+                    "Cloudinary upload complete:",
+                    imageURL
                 );
+
+                progressFill.style.width =
+                    "100%";
+
+                progressPercent.textContent =
+                    "100%";
+
+                progressStatus.textContent =
+                    "Saving frame...";
+
+                const frameData = {
+                    name: name,
+                    price: price,
+                    tagline: tagline,
+                    description: description,
+                    imageURL: imageURL,
+                    cloudinaryPublicId: cloudinaryPublicId,
+                    createdAt: serverTimestamp(),
+                    createdBy: user.uid
+                };
+
+                const frameDoc =
+                    await addDoc(
+                        collection(
+                            db,
+                            "frames"
+                        ),
+                        frameData
+                    );
+
+                console.log(
+                    "Frame saved:",
+                    frameDoc.id
+                );
+
+                progressStatus.textContent =
+                    "Complete!";
+
+                showMessage(
+                    "✅ Frame uploaded successfully!",
+                    "success"
+                );
+
+                frameForm.reset();
+
+                selectedFile.textContent =
+                    "No image selected";
+
+                previewImage.src = "";
+
+                imagePreview.style.display =
+                    "none";
+
+                await loadFrames();
+
+                setTimeout(() => {
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent =
+                        "Upload & Add Frame";
+                    progressContainer.style.display =
+                        "none";
+                    progressFill.style.width =
+                        "0%";
+                    progressPercent.textContent =
+                        "0%";
+                }, 1500);
 
             } catch (error) {
 
@@ -678,23 +500,19 @@ if (frameForm) {
                     error
                 );
 
-
                 uploadBtn.disabled =
                     false;
 
                 uploadBtn.textContent =
                     "Upload & Add Frame";
 
-
                 progressContainer.style.display =
                     "none";
-
 
                 showMessage(
                     getFirebaseErrorMessage(error),
                     "error"
                 );
-
             }
 
         }
@@ -703,10 +521,6 @@ if (frameForm) {
 
 }
 
-
-// ======================================================
-// LOAD EXISTING FRAMES
-// ======================================================
 
 async function loadFrames() {
 
@@ -723,54 +537,56 @@ async function loadFrames() {
 
     try {
 
-        const framesQuery =
-            query(
+        const snapshot =
+            await getDocs(
                 collection(
                     db,
                     "frames"
-                ),
-                orderBy(
-                    "createdAt",
-                    "desc"
                 )
             );
 
-
-        const snapshot =
-            await getDocs(
-                framesQuery
-            );
-
-
         framesList.innerHTML = "";
 
-
         if (snapshot.empty) {
-
             framesList.innerHTML =
                 `<div class="empty">
                     No frames added yet.
                 </div>`;
-
             return;
         }
 
+        const frames = snapshot.docs
+            .map((frameDoc) => ({
+                doc: frameDoc,
+                data: frameDoc.data()
+            }))
+            .sort((a, b) => {
+                const aTimestamp = a.data.createdAt;
+                const bTimestamp = b.data.createdAt;
 
-        snapshot.forEach((frameDoc) => {
+                const aTime =
+                    aTimestamp?.toMillis?.() ||
+                    (aTimestamp
+                        ? new Date(aTimestamp).getTime()
+                        : 0);
 
-            const frame =
-                frameDoc.data();
+                const bTime =
+                    bTimestamp?.toMillis?.() ||
+                    (bTimestamp
+                        ? new Date(bTimestamp).getTime()
+                        : 0);
 
+                return bTime - aTime;
+            });
 
+        frames.forEach(({ doc: frameDoc, data: frame }) => {
             const item =
                 document.createElement(
                     "div"
                 );
 
-
             item.className =
                 "frame-item";
-
 
             item.innerHTML = `
 
@@ -837,100 +653,52 @@ async function loadFrames() {
 
             `;
 
-
             const deleteButton =
                 item.querySelector(
                     ".delete-btn"
                 );
 
-
             deleteButton.addEventListener(
                 "click",
                 () => {
-
                     deleteFrame(
                         frameDoc.id,
                         frame.storagePath
                     );
-
                 }
             );
-
 
             framesList.appendChild(
                 item
             );
-
         });
-
     } catch (error) {
-
         console.error(
             "Error loading frames:",
             error
         );
-
 
         framesList.innerHTML =
             `<div class="empty">
                 Unable to load frames.
                 Check Firebase Firestore rules/indexes.
             </div>`;
-
     }
 
 }
-
-
-// ======================================================
-// DELETE FRAME
-// ======================================================
 
 async function deleteFrame(
     frameId,
     storagePath
 ) {
-
     const confirmed =
         confirm(
             "Are you sure you want to delete this frame?"
         );
-
-
     if (!confirmed) {
         return;
     }
-
-
     try {
-
-        // Delete image from Storage
-        if (storagePath) {
-
-            try {
-
-                const imageRef =
-                    ref(
-                        storage,
-                        storagePath
-                    );
-
-                await deleteObject(
-                    imageRef
-                );
-
-            } catch (storageError) {
-
-                console.warn(
-                    "Storage image could not be deleted:",
-                    storageError
-                );
-
-            }
-
-        }
-
-
         // Delete Firestore document
         await deleteDoc(
             doc(
@@ -939,37 +707,22 @@ async function deleteFrame(
                 frameId
             )
         );
-
-
         showMessage(
             "Frame deleted successfully.",
             "success"
         );
-
-
         await loadFrames();
-
     } catch (error) {
-
         console.error(
             "Delete error:",
             error
         );
-
-
         showMessage(
             getFirebaseErrorMessage(error),
             "error"
         );
-
     }
-
 }
-
-
-// ======================================================
-// MESSAGE
-// ======================================================
 
 function showMessage(
     text,
@@ -1006,11 +759,6 @@ function hideMessage() {
 
 }
 
-
-// ======================================================
-// FILE EXTENSION
-// ======================================================
-
 function getFileExtension(
     fileName
 ) {
@@ -1031,10 +779,6 @@ function getFileExtension(
 }
 
 
-// ======================================================
-// PRICE FORMAT
-// ======================================================
-
 function formatPrice(price) {
 
     return (
@@ -1042,11 +786,6 @@ function formatPrice(price) {
     ).toLocaleString("en-NG");
 
 }
-
-
-// ======================================================
-// HTML ESCAPE
-// ======================================================
 
 function escapeHTML(value) {
 
@@ -1081,7 +820,7 @@ function escapeHTML(value) {
 
 
 // ======================================================
-// FIREBASE ERROR MESSAGE
+// GENERALIZED ERROR MESSAGE
 // ======================================================
 
 function getFirebaseErrorMessage(
@@ -1089,50 +828,9 @@ function getFirebaseErrorMessage(
 ) {
 
     console.error(
-        "Firebase error:",
+        "Application error:",
         error
     );
-
-
-    if (
-        error &&
-        error.code ===
-        "storage/unauthorized"
-    ) {
-
-        return (
-            "❌ Firebase Storage rejected the upload. " +
-            "Check your Firebase Storage Rules."
-        );
-
-    }
-
-
-    if (
-        error &&
-        error.code ===
-        "storage/object-not-found"
-    ) {
-
-        return (
-            "❌ Firebase Storage could not find the uploaded image."
-        );
-
-    }
-
-
-    if (
-        error &&
-        error.code ===
-        "storage/quota-exceeded"
-    ) {
-
-        return (
-            "❌ Firebase Storage quota has been exceeded."
-        );
-
-    }
-
 
     if (
         error &&
@@ -1147,7 +845,6 @@ function getFirebaseErrorMessage(
 
     }
 
-
     if (
         error &&
         error.message
@@ -1160,10 +857,8 @@ function getFirebaseErrorMessage(
 
     }
 
-
     return (
         "❌ Something went wrong. " +
         "Open F12 → Console to see the exact error."
     );
-
 }
