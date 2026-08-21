@@ -1,0 +1,372 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GODMADE — Admin Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #08080d;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #14141d;
+      border: 1px solid #292936;
+      border-radius: 16px;
+      padding: 35px;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .logo span {
+      color: #a855f7;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #33333f;
+      background: #0d0d14;
+      color: white;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #8b5cf6;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #7c3aed, #ec4899);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.12);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(34, 197, 94, 0.12);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      color: #888;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back:hover {
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-card">
+
+    <div class="logo">
+      GOD<span>MADE</span>
+    </div>
+
+    <p class="subtitle">
+      Admin Dashboard
+    </p>
+
+    <form id="loginForm">
+
+      <div class="form-group">
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="Admin email"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+        >
+      </div>
+
+      <button
+        type="submit"
+        id="loginBtn"
+      >
+        Login
+      </button>
+
+      <div
+        class="message"
+        id="message"
+      ></div>
+
+    </form>
+
+    <a
+      href="../index.html"
+      class="back"
+    >
+      ← Back to GODMADE
+    </a>
+
+  </div>
+
+  <script type="module">
+
+    import {
+      auth
+    } from "../js/firebase-config.js";
+
+    import {
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    const ADMIN_EMAIL =
+      "godmadeepts@gmail.com";
+
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const email =
+      document.getElementById("email");
+
+    const password =
+      document.getElementById("password");
+
+    const loginBtn =
+      document.getElementById("loginBtn");
+
+    const message =
+      document.getElementById("message");
+
+
+    loginForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+        const enteredEmail =
+          email.value.trim();
+
+        const enteredPassword =
+          password.value;
+
+
+        if (
+          enteredEmail.toLowerCase() !==
+          ADMIN_EMAIL.toLowerCase()
+        ) {
+
+          showMessage(
+            "This email is not authorized as the GODMADE admin.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Logging in...";
+
+        hideMessage();
+
+
+        try {
+
+          await signInWithEmailAndPassword(
+            auth,
+            enteredEmail,
+            enteredPassword
+          );
+
+
+          showMessage(
+            "Login successful. Opening dashboard...",
+            "success"
+          );
+
+
+          setTimeout(() => {
+
+            window.location.href =
+              "./dashboard.html";
+
+          }, 500);
+
+
+        } catch (error) {
+
+          console.error(
+            "LOGIN ERROR:",
+            error
+          );
+
+
+          let errorMessage =
+            "Unable to login.";
+
+
+          switch (error.code) {
+
+            case "auth/invalid-credential":
+              errorMessage =
+                "Incorrect email or password.";
+              break;
+
+            case "auth/wrong-password":
+              errorMessage =
+                "Incorrect password.";
+              break;
+
+            case "auth/user-not-found":
+              errorMessage =
+                "No admin account was found with this email.";
+              break;
+
+            case "auth/too-many-requests":
+              errorMessage =
+                "Too many login attempts. Try again later.";
+              break;
+
+            case "auth/network-request-failed":
+              errorMessage =
+                "Network error. Check your internet connection.";
+              break;
+
+            default:
+              errorMessage =
+                error.message ||
+                "Unable to login.";
+          }
+
+
+          showMessage(
+            errorMessage,
+            "error"
+          );
+
+
+          loginBtn.disabled = false;
+          loginBtn.textContent = "Login";
+
+        }
+
+      }
+    );
+
+
+    function showMessage(
+      text,
+      type
+    ) {
+
+      message.textContent = text;
+
+      message.className =
+        `message ${type}`;
+
+    }
+
+
+    function hideMessage() {
+
+      message.textContent = "";
+
+      message.className =
+        "message";
+
+    }
+
+  </script>
+
+</body>
+</html>
