@@ -1,11 +1,6 @@
 import { auth, db } from "../js/firebase-config.js";
 
 import {
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-import {
     collection,
     addDoc,
     getDocs,
@@ -14,52 +9,61 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
-
-// ======================================================
-// GODMADE ADMIN DASHBOARD
-// ======================================================
-
-console.log("GODMADE admin.js loaded.");
+// ============================================================
+// CLOUDINARY
+// ============================================================
 
 const CLOUDINARY_CLOUD_NAME = "ecd8rvtk";
-const CLOUDINARY_UPLOAD_PRESET = "photography_portfolio";
+
+const CLOUDINARY_UPLOAD_PRESET =
+    "photography_portfolio";
+
 const CLOUDINARY_UPLOAD_URL =
     `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 
-// ======================================================
-// GET ELEMENTS
-// ======================================================
+// ============================================================
+// DOM ELEMENTS
+// ============================================================
 
-const frameForm = document.getElementById("frameForm");
+const frameForm =
+    document.getElementById("frameForm");
 
-const frameName = document.getElementById("frameName");
-const framePrice = document.getElementById("framePrice");
-const frameTagline = document.getElementById("frameTagline");
-const frameDescription = document.getElementById("frameDescription");
+const frameImage =
+    document.getElementById("frameImage");
 
-const frameImage = document.getElementById("frameImage");
+const selectedFile =
+    document.getElementById("selectedFile");
 
-const selectedFile = document.getElementById("selectedFile");
+const imagePreview =
+    document.getElementById("imagePreview");
 
-const imagePreview = document.getElementById("imagePreview");
-const previewImage = document.getElementById("previewImage");
+const previewImage =
+    document.getElementById("previewImage");
 
-const uploadBtn = document.getElementById("uploadBtn");
+const fileUploadBox =
+    document.getElementById("fileUploadBox");
+
+const uploadBtn =
+    document.getElementById("uploadBtn");
 
 const progressContainer =
     document.getElementById("progressContainer");
 
-const progressStatus =
-    document.getElementById("progressStatus");
+const progressFill =
+    document.getElementById("progressFill");
 
 const progressPercent =
     document.getElementById("progressPercent");
 
-const progressFill =
-    document.getElementById("progressFill");
+const progressStatus =
+    document.getElementById("progressStatus");
 
 const message =
     document.getElementById("message");
@@ -67,460 +71,438 @@ const message =
 const framesList =
     document.getElementById("framesList");
 
-const adminEmail =
-    document.getElementById("adminEmail");
+const frameCount =
+    document.getElementById("frameCount");
 
 const logoutBtn =
     document.getElementById("logoutBtn");
 
+const adminEmail =
+    document.getElementById("adminEmail");
 
-// ======================================================
-// AUTH CHECK
-// ======================================================
 
-onAuthStateChanged(auth, (user) => {
+// ============================================================
+// MESSAGES
+// ============================================================
 
-    if (user) {
+function showMessage(
+    text,
+    type = "success"
+) {
 
-        console.log("Admin logged in:", user.email);
+    if (!message) return;
 
-        if (adminEmail) {
-            adminEmail.textContent = user.email;
-        }
+    message.textContent = text;
 
-        loadFrames();
+    message.className =
+        "lg:col-span-2 text-[13px] leading-relaxed rounded-sm px-4 py-3";
+
+    if (type === "success") {
+
+        message.classList.add(
+            "bg-moss",
+            "text-cream"
+        );
 
     } else {
 
-        console.log("No admin logged in.");
+        message.classList.add(
+            "bg-red-700",
+            "text-cream"
+        );
 
-        window.location.href = "login.html";
     }
 
-});
-
-
-// ======================================================
-// LOGOUT
-// ======================================================
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener("click", async () => {
-
-        try {
-
-            await signOut(auth);
-
-            window.location.href = "login.html";
-
-        } catch (error) {
-
-            console.error("Logout error:", error);
-
-        }
-
-    });
-
+    message.classList.remove(
+        "hidden"
+    );
 }
 
 
-// ======================================================
-// IMAGE SELECT
-// ======================================================
+function clearMessage() {
 
-if (frameImage) {
+    if (!message) return;
 
-    frameImage.addEventListener("change", (event) => {
+    message.textContent = "";
 
-        console.log("File input changed.");
-
-        const file = event.target.files[0];
-
-        if (!file) {
-
-            console.log("No file selected.");
-
-            selectedFile.textContent =
-                "No image selected";
-
-            imagePreview.style.display = "none";
-
-            previewImage.src = "";
-
-            return;
-        }
-
-
-        console.log("Selected file:", file.name);
-
-        console.log("File type:", file.type);
-
-        console.log("File size:", file.size);
-
-
-        // Check image
-        if (!file.type.startsWith("image/")) {
-
-            showMessage(
-                "Please select a valid image file.",
-                "error"
-            );
-
-            frameImage.value = "";
-
-            return;
-        }
-
-
-        // Maximum 10MB
-        if (file.size > 10 * 1024 * 1024) {
-
-            showMessage(
-                "Image is too large. Maximum size is 10MB.",
-                "error"
-            );
-
-            frameImage.value = "";
-
-            return;
-        }
-
-
-        // Show filename
-        selectedFile.textContent =
-            "Selected: " + file.name;
-
-
-        // Create preview
-        const reader = new FileReader();
-
-
-        reader.onload = (e) => {
-
-            console.log("Image preview loaded.");
-
-            previewImage.src =
-                e.target.result;
-
-            imagePreview.style.display =
-                "block";
-        };
-
-
-        reader.onerror = () => {
-
-            console.error(
-                "Could not read image."
-            );
-
-            showMessage(
-                "Could not preview this image.",
-                "error"
-            );
-
-        };
-
-
-        reader.readAsDataURL(file);
-
-    });
-
+    message.classList.add(
+        "hidden"
+    );
 }
 
 
-// ======================================================
-// FORM SUBMIT
-// ======================================================
+// ============================================================
+// HELPERS
+// ============================================================
 
-if (frameForm) {
+function formatPrice(value) {
 
-    frameForm.addEventListener(
-        "submit",
-        async (event) => {
+    const number =
+        Number(value);
 
-            event.preventDefault();
+    if (!Number.isFinite(number)) {
+        return value || "";
+    }
 
-            console.log(
-                "Frame form submitted."
-            );
-
-
-            const user =
-                auth.currentUser;
+    return `₦${number.toLocaleString("en-NG")}`;
+}
 
 
-            if (!user) {
+function formatDate(timestamp) {
 
-                showMessage(
-                    "You are not logged in. Please login again.",
-                    "error"
-                );
+    if (!timestamp) {
+        return "";
+    }
 
-                return;
+    try {
+
+        const date =
+            timestamp.toDate
+                ? timestamp.toDate()
+                : new Date(timestamp);
+
+        return date.toLocaleDateString(
+            "en-NG",
+            {
+                day: "numeric",
+                month: "short",
+                year: "numeric"
             }
+        );
 
+    } catch {
 
-            // ==================================================
-            // GET VALUES
-            // ==================================================
+        return "";
 
-            const name =
-                frameName.value.trim();
+    }
+}
 
-            const price =
-                Number(framePrice.value);
 
-            const tagline =
-                frameTagline.value.trim();
+function getErrorMessage(error) {
 
-            const description =
-                frameDescription.value.trim();
-
-            const file =
-                frameImage.files[0];
-
-
-            // ==================================================
-            // VALIDATION
-            // ==================================================
-
-            if (!name) {
-
-                showMessage(
-                    "Please enter the frame name.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!price || price < 0) {
-
-                showMessage(
-                    "Please enter a valid price.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!tagline) {
-
-                showMessage(
-                    "Please enter a short description.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!description) {
-
-                showMessage(
-                    "Please enter the full description.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!file) {
-
-                showMessage(
-                    "Please choose an image first.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            // ==================================================
-            // DISABLE BUTTON
-            // ==================================================
-
-            uploadBtn.disabled = true;
-
-            uploadBtn.textContent =
-                "Uploading...";
-
-
-            progressContainer.style.display =
-                "block";
-
-            progressFill.style.width =
-                "0%";
-
-            progressPercent.textContent =
-                "0%";
-
-            progressStatus.textContent =
-                "Preparing image...";
-
-            hideMessage();
-
-
-            try {
-                // ==================================================
-                // UPLOAD TO CLOUDINARY
-                // ==================================================
-
-                console.log(
-                    "Uploading image to Cloudinary..."
-                );
-
-                progressStatus.textContent =
-                    "Uploading image...";
-
-                const cloudinaryFormData =
-                    new FormData();
-
-                cloudinaryFormData.append(
-                    "file",
-                    file
-                );
-
-                cloudinaryFormData.append(
-                    "upload_preset",
-                    CLOUDINARY_UPLOAD_PRESET
-                );
-
-                cloudinaryFormData.append(
-                    "folder",
-                    "portfolio/frames"
-                );
-
-                const cloudinaryResponse =
-                    await fetch(
-                        CLOUDINARY_UPLOAD_URL,
-                        {
-                            method: "POST",
-                            body: cloudinaryFormData
-                        }
-                    );
-
-                if (!cloudinaryResponse.ok) {
-                    const errorText =
-                        await cloudinaryResponse.text();
-
-                    throw new Error(
-                        `Cloudinary upload failed: ${errorText}`
-                    );
-                }
-
-                const cloudinaryData =
-                    await cloudinaryResponse.json();
-
-                const imageURL =
-                    cloudinaryData.secure_url;
-
-                const cloudinaryPublicId =
-                    cloudinaryData.public_id;
-
-                console.log(
-                    "Cloudinary upload complete:",
-                    imageURL
-                );
-
-                progressFill.style.width =
-                    "100%";
-
-                progressPercent.textContent =
-                    "100%";
-
-                progressStatus.textContent =
-                    "Saving frame...";
-
-                const frameData = {
-                    name: name,
-                    price: price,
-                    tagline: tagline,
-                    description: description,
-                    imageURL: imageURL,
-                    cloudinaryPublicId: cloudinaryPublicId,
-                    createdAt: serverTimestamp(),
-                    createdBy: user.uid
-                };
-
-                const frameDoc =
-                    await addDoc(
-                        collection(
-                            db,
-                            "frames"
-                        ),
-                        frameData
-                    );
-
-                console.log(
-                    "Frame saved:",
-                    frameDoc.id
-                );
-
-                progressStatus.textContent =
-                    "Complete!";
-
-                showMessage(
-                    "✅ Frame uploaded successfully!",
-                    "success"
-                );
-
-                frameForm.reset();
-
-                selectedFile.textContent =
-                    "No image selected";
-
-                previewImage.src = "";
-
-                imagePreview.style.display =
-                    "none";
-
-                await loadFrames();
-
-                setTimeout(() => {
-                    uploadBtn.disabled = false;
-                    uploadBtn.textContent =
-                        "Upload & Add Frame";
-                    progressContainer.style.display =
-                        "none";
-                    progressFill.style.width =
-                        "0%";
-                    progressPercent.textContent =
-                        "0%";
-                }, 1500);
-
-            } catch (error) {
-
-                console.error(
-                    "Upload setup error:",
-                    error
-                );
-
-                uploadBtn.disabled =
-                    false;
-
-                uploadBtn.textContent =
-                    "Upload & Add Frame";
-
-                progressContainer.style.display =
-                    "none";
-
-                showMessage(
-                    getFirebaseErrorMessage(error),
-                    "error"
-                );
-            }
-
-        }
-
+    console.error(
+        "GODMADE admin error:",
+        error
     );
 
+    if (
+        error?.code ===
+        "permission-denied"
+    ) {
+
+        return (
+            "Firestore permission denied. " +
+            "Check your Firestore Rules."
+        );
+
+    }
+
+    if (error?.message) {
+
+        return error.message;
+
+    }
+
+    return (
+        "Something went wrong. " +
+        "Open the browser console for details."
+    );
 }
 
+
+// ============================================================
+// CREATE FRAME CARD
+// ============================================================
+
+function buildFrameCard(
+    frameId,
+    frame
+) {
+
+    const card =
+        document.createElement("article");
+
+    card.className =
+        "contact-frame";
+
+    card.dataset.frameId =
+        frameId;
+
+
+    // --------------------------------------------------------
+    // IMAGE
+    // --------------------------------------------------------
+
+    const imageWrap =
+        document.createElement("div");
+
+    imageWrap.className =
+        "w-full h-[230px] bg-umber/10 overflow-hidden";
+
+
+    const image =
+        document.createElement("img");
+
+    image.src =
+        frame.imageURL || "";
+
+    image.alt =
+        frame.name ||
+        "Portfolio frame";
+
+    image.className =
+        "w-full h-full object-cover block";
+
+    image.loading =
+        "lazy";
+
+
+    imageWrap.appendChild(
+        image
+    );
+
+
+    // --------------------------------------------------------
+    // CONTENT
+    // --------------------------------------------------------
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "p-5";
+
+
+    const info =
+        document.createElement("div");
+
+    info.className =
+        "space-y-1 mb-5";
+
+
+    // NAME
+
+    const name =
+        document.createElement("h3");
+
+    name.className =
+        "font-serif text-[19px] text-umber leading-snug";
+
+    name.textContent =
+        frame.name ||
+        "Untitled frame";
+
+
+    // PRICE
+
+    const price =
+        document.createElement("p");
+
+    price.className =
+        "text-[14px] text-moss font-semibold";
+
+    price.textContent =
+        formatPrice(
+            frame.price
+        );
+
+
+    // TAGLINE
+
+    const tagline =
+        document.createElement("p");
+
+    tagline.className =
+        "text-[13px] text-umber/65 leading-relaxed";
+
+    tagline.textContent =
+        frame.tagline ||
+        "";
+
+
+    info.append(
+        name,
+        price,
+        tagline
+    );
+
+
+    // DESCRIPTION
+
+    if (frame.description) {
+
+        const description =
+            document.createElement("p");
+
+        description.className =
+            "text-[12px] text-umber/50 leading-relaxed pt-2";
+
+        description.textContent =
+            frame.description;
+
+        info.appendChild(
+            description
+        );
+    }
+
+
+    // DATE
+
+    const date =
+        formatDate(
+            frame.createdAt
+        );
+
+    if (date) {
+
+        const dateElement =
+            document.createElement("p");
+
+        dateElement.className =
+            "text-[11px] uppercase tracking-[0.14em] text-moss/60 pt-2";
+
+        dateElement.textContent =
+            date;
+
+        info.appendChild(
+            dateElement
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // DELETE BUTTON
+    // --------------------------------------------------------
+
+    const deleteButton =
+        document.createElement("button");
+
+    deleteButton.type =
+        "button";
+
+    deleteButton.className =
+        "delete-btn";
+
+    deleteButton.dataset.action =
+        "delete-trigger";
+
+    deleteButton.innerHTML = `
+        <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+        >
+            <polyline points="3 6 5 6 21 6"></polyline>
+
+            <path
+                d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+            ></path>
+
+            <path d="M10 11v6"></path>
+
+            <path d="M14 11v6"></path>
+
+            <path
+                d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"
+            ></path>
+        </svg>
+
+        Delete frame
+    `;
+
+
+    // --------------------------------------------------------
+    // CUSTOM DELETE CONFIRMATION
+    // --------------------------------------------------------
+
+    const confirmRow =
+        document.createElement("div");
+
+    confirmRow.className =
+        "delete-confirm-row";
+
+    confirmRow.dataset.role =
+        "confirm-row";
+
+
+    const confirmText =
+        document.createElement("p");
+
+    confirmText.className =
+        "text-[12px] text-umber/70 flex-1";
+
+    confirmText.textContent =
+        "Delete this frame?";
+
+
+    const cancelButton =
+        document.createElement("button");
+
+    cancelButton.type =
+        "button";
+
+    cancelButton.className =
+        "delete-confirm-cancel";
+
+    cancelButton.dataset.action =
+        "cancel-delete";
+
+    cancelButton.textContent =
+        "Cancel";
+
+
+    const confirmButton =
+        document.createElement("button");
+
+    confirmButton.type =
+        "button";
+
+    confirmButton.className =
+        "delete-confirm-submit";
+
+    confirmButton.dataset.action =
+        "confirm-delete";
+
+    confirmButton.textContent =
+        "Delete";
+
+
+    confirmRow.append(
+        confirmText,
+        cancelButton,
+        confirmButton
+    );
+
+
+    // --------------------------------------------------------
+    // ASSEMBLE CARD
+    // --------------------------------------------------------
+
+    content.append(
+        info,
+        deleteButton,
+        confirmRow
+    );
+
+    card.append(
+        imageWrap,
+        content
+    );
+
+
+    return card;
+}
+
+
+// ============================================================
+// LOAD FRAMES
+// ============================================================
 
 async function loadFrames() {
 
@@ -528,11 +510,7 @@ async function loadFrames() {
         return;
     }
 
-
-    framesList.innerHTML =
-        `<div class="loading">
-            Loading frames...
-        </div>`;
+    framesList.innerHTML = "";
 
 
     try {
@@ -545,161 +523,127 @@ async function loadFrames() {
                 )
             );
 
-        framesList.innerHTML = "";
 
-        if (snapshot.empty) {
-            framesList.innerHTML =
-                `<div class="empty">
-                    No frames added yet.
-                </div>`;
-            return;
+        const frames =
+            snapshot.docs
+                .map(
+                    (frameDoc) => ({
+                        id: frameDoc.id,
+                        data: frameDoc.data()
+                    })
+                )
+                .sort(
+                    (a, b) => {
+
+                        const aTime =
+                            a.data.createdAt
+                                ?.toMillis?.() || 0;
+
+                        const bTime =
+                            b.data.createdAt
+                                ?.toMillis?.() || 0;
+
+                        return (
+                            bTime -
+                            aTime
+                        );
+                    }
+                );
+
+
+        // COUNT
+
+        if (frameCount) {
+
+            frameCount.textContent =
+                `${frames.length} ${
+                    frames.length === 1
+                        ? "frame"
+                        : "frames"
+                }`;
         }
 
-        const frames = snapshot.docs
-            .map((frameDoc) => ({
-                doc: frameDoc,
-                data: frameDoc.data()
-            }))
-            .sort((a, b) => {
-                const aTimestamp = a.data.createdAt;
-                const bTimestamp = b.data.createdAt;
 
-                const aTime =
-                    aTimestamp?.toMillis?.() ||
-                    (aTimestamp
-                        ? new Date(aTimestamp).getTime()
-                        : 0);
+        // EMPTY
 
-                const bTime =
-                    bTimestamp?.toMillis?.() ||
-                    (bTimestamp
-                        ? new Date(bTimestamp).getTime()
-                        : 0);
+        if (!frames.length) {
 
-                return bTime - aTime;
-            });
-
-        frames.forEach(({ doc: frameDoc, data: frame }) => {
-            const item =
+            const empty =
                 document.createElement(
                     "div"
                 );
 
-            item.className =
-                "frame-item";
+            empty.className =
+                "lg:col-span-3 py-14 text-center text-umber/55 text-[14px]";
 
-            item.innerHTML = `
-
-                <div class="frame-item-image">
-
-                    <img
-                        src="${escapeHTML(
-                            frame.imageURL || ""
-                        )}"
-                        alt="${escapeHTML(
-                            frame.name || "GODMADE Frame"
-                        )}"
-                        loading="lazy"
-                    >
-
-                </div>
-
-
-                <div class="frame-item-info">
-
-                    <h3>
-                        ${escapeHTML(
-                            frame.name ||
-                            "GODMADE Original"
-                        )}
-                    </h3>
-
-
-                    <div class="frame-item-price">
-
-                        ₦${formatPrice(
-                            frame.price
-                        )}
-
-                    </div>
-
-
-                    <div class="frame-item-tagline">
-
-                        ${escapeHTML(
-                            frame.tagline || ""
-                        )}
-
-                    </div>
-
-
-                    <div class="frame-item-description">
-
-                        ${escapeHTML(
-                            frame.description || ""
-                        )}
-
-                    </div>
-
-
-                    <button
-                        class="delete-btn"
-                        data-id="${frameDoc.id}"
-                    >
-                        Delete Frame
-                    </button>
-
-                </div>
-
-            `;
-
-            const deleteButton =
-                item.querySelector(
-                    ".delete-btn"
-                );
-
-            deleteButton.addEventListener(
-                "click",
-                () => {
-                    deleteFrame(
-                        frameDoc.id,
-                        frame.storagePath
-                    );
-                }
-            );
+            empty.textContent =
+                "No frames uploaded yet.";
 
             framesList.appendChild(
-                item
+                empty
             );
-        });
+
+            return;
+        }
+
+
+        // CREATE CARDS
+
+        frames.forEach(
+            ({ id, data }) => {
+
+                framesList.appendChild(
+                    buildFrameCard(
+                        id,
+                        data
+                    )
+                );
+
+            }
+        );
+
     } catch (error) {
+
         console.error(
-            "Error loading frames:",
+            "Unable to load frames:",
             error
         );
 
-        framesList.innerHTML =
-            `<div class="empty">
-                Unable to load frames.
-                Check Firebase Firestore rules/indexes.
-            </div>`;
+        showMessage(
+            getErrorMessage(error),
+            "error"
+        );
     }
-
 }
+
+
+// ============================================================
+// DELETE FRAME
+// ============================================================
 
 async function deleteFrame(
     frameId,
-    storagePath
+    card
 ) {
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this frame?"
-        );
-    if (!confirmed) {
-        return;
-    }
+
     try {
-        // Delete Firestore document
+
+        const confirmButton =
+            card.querySelector(
+                '[data-action="confirm-delete"]'
+            );
+
+
+        if (confirmButton) {
+
+            confirmButton.disabled =
+                true;
+
+            confirmButton.textContent =
+                "Deleting...";
+        }
+
+
         await deleteDoc(
             doc(
                 db,
@@ -707,158 +651,707 @@ async function deleteFrame(
                 frameId
             )
         );
+
+
+        card.remove();
+
+
+        await loadFrames();
+
+
         showMessage(
-            "Frame deleted successfully.",
+            "Frame deleted.",
             "success"
         );
-        await loadFrames();
+
+
     } catch (error) {
+
         console.error(
-            "Delete error:",
+            "Unable to delete frame:",
             error
         );
+
+
         showMessage(
-            getFirebaseErrorMessage(error),
+            getErrorMessage(error),
             "error"
         );
+
+
+        const confirmButton =
+            card.querySelector(
+                '[data-action="confirm-delete"]'
+            );
+
+
+        if (confirmButton) {
+
+            confirmButton.disabled =
+                false;
+
+            confirmButton.textContent =
+                "Delete";
+        }
     }
 }
 
-function showMessage(
-    text,
-    type
-) {
 
-    if (!message) {
-        return;
-    }
+// ============================================================
+// CUSTOM DELETE UI
+// ============================================================
 
+if (framesList) {
 
-    message.textContent =
-        text;
+    framesList.addEventListener(
+        "click",
+        (event) => {
 
+            const button =
+                event.target.closest(
+                    "button"
+                );
 
-    message.className =
-        "message " + type;
-
-}
-
-
-function hideMessage() {
-
-    if (!message) {
-        return;
-    }
+            if (!button) {
+                return;
+            }
 
 
-    message.textContent =
-        "";
+            const card =
+                button.closest(
+                    "[data-frame-id]"
+                );
 
-    message.className =
-        "message";
-
-}
-
-function getFileExtension(
-    fileName
-) {
-
-    const parts =
-        fileName.split(".");
+            if (!card) {
+                return;
+            }
 
 
-    if (parts.length < 2) {
-        return "jpg";
-    }
+            const action =
+                button.dataset.action;
 
 
-    return parts
-        .pop()
-        .toLowerCase();
-
-}
-
-
-function formatPrice(price) {
-
-    return (
-        Number(price) || 0
-    ).toLocaleString("en-NG");
-
-}
-
-function escapeHTML(value) {
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
+            const confirmRow =
+                card.querySelector(
+                    '[data-role="confirm-row"]'
+                );
 
 
-// ======================================================
-// GENERALIZED ERROR MESSAGE
-// ======================================================
+            const deleteButton =
+                card.querySelector(
+                    '[data-action="delete-trigger"]'
+                );
 
-function getFirebaseErrorMessage(
-    error
-) {
 
-    console.error(
-        "Application error:",
-        error
-    );
+            // ------------------------------------------------
+            // SHOW CUSTOM CONFIRMATION
+            // ------------------------------------------------
 
-    if (
-        error &&
-        error.code ===
-        "permission-denied"
-    ) {
+            if (
+                action ===
+                "delete-trigger"
+            ) {
 
-        return (
-            "❌ Firestore permission denied. " +
-            "Check your Firestore Rules."
-        );
+                confirmRow?.classList.add(
+                    "active"
+                );
 
-    }
 
-    if (
-        error &&
-        error.message
-    ) {
+                if (deleteButton) {
 
-        return (
-            "❌ " +
-            error.message
-        );
+                    deleteButton.style.display =
+                        "none";
+                }
 
-    }
 
-    return (
-        "❌ Something went wrong. " +
-        "Open F12 → Console to see the exact error."
+                return;
+            }
+
+
+            // ------------------------------------------------
+            // CANCEL
+            // ------------------------------------------------
+
+            if (
+                action ===
+                "cancel-delete"
+            ) {
+
+                confirmRow?.classList.remove(
+                    "active"
+                );
+
+
+                if (deleteButton) {
+
+                    deleteButton.style.display =
+                        "flex";
+                }
+
+
+                return;
+            }
+
+
+            // ------------------------------------------------
+            // ACTUAL DELETE
+            // ------------------------------------------------
+
+            if (
+                action ===
+                "confirm-delete"
+            ) {
+
+                deleteFrame(
+                    card.dataset.frameId,
+                    card
+                );
+
+            }
+
+        }
     );
 }
+
+
+// ============================================================
+// IMAGE PREVIEW
+// ============================================================
+
+if (frameImage) {
+
+    frameImage.addEventListener(
+        "change",
+        () => {
+
+            const file =
+                frameImage.files?.[0];
+
+
+            if (!file) {
+
+                selectedFile.textContent =
+                    "No image selected";
+
+                imagePreview.classList.add(
+                    "hidden"
+                );
+
+                previewImage.src =
+                    "";
+
+                return;
+            }
+
+
+            selectedFile.textContent =
+                file.name;
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                (event) => {
+
+                    previewImage.src =
+                        event.target.result;
+
+                    imagePreview.classList.remove(
+                        "hidden"
+                    );
+                };
+
+
+            reader.readAsDataURL(
+                file
+            );
+        }
+    );
+}
+
+
+// ============================================================
+// DRAG & DROP
+// ============================================================
+
+if (fileUploadBox) {
+
+    [
+        "dragenter",
+        "dragover"
+    ].forEach(
+        (eventName) => {
+
+            fileUploadBox.addEventListener(
+                eventName,
+                (event) => {
+
+                    event.preventDefault();
+
+                    fileUploadBox.classList.add(
+                        "drag-over"
+                    );
+                }
+            );
+
+        }
+    );
+
+
+    [
+        "dragleave",
+        "drop"
+    ].forEach(
+        (eventName) => {
+
+            fileUploadBox.addEventListener(
+                eventName,
+                (event) => {
+
+                    event.preventDefault();
+
+                    fileUploadBox.classList.remove(
+                        "drag-over"
+                    );
+                }
+            );
+
+        }
+    );
+
+
+    fileUploadBox.addEventListener(
+        "drop",
+        (event) => {
+
+            const file =
+                event.dataTransfer?.files?.[0];
+
+
+            if (
+                !file ||
+                !frameImage
+            ) {
+
+                return;
+            }
+
+
+            const dataTransfer =
+                new DataTransfer();
+
+
+            dataTransfer.items.add(
+                file
+            );
+
+
+            frameImage.files =
+                dataTransfer.files;
+
+
+            frameImage.dispatchEvent(
+                new Event(
+                    "change",
+                    {
+                        bubbles: true
+                    }
+                )
+            );
+
+        }
+    );
+}
+
+
+// ============================================================
+// UPLOAD FORM
+// ============================================================
+
+if (frameForm) {
+
+    frameForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+            clearMessage();
+
+
+            const user =
+                auth.currentUser;
+
+
+            const file =
+                frameImage?.files?.[0];
+
+
+            if (!user) {
+
+                showMessage(
+                    "You must be signed in to upload a frame.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (!file) {
+
+                showMessage(
+                    "Choose an image first.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (
+                !file.type.startsWith(
+                    "image/"
+                )
+            ) {
+
+                showMessage(
+                    "Please choose a valid image file.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            const name =
+                document
+                    .getElementById(
+                        "frameName"
+                    )
+                    ?.value
+                    .trim();
+
+
+            const price =
+                document
+                    .getElementById(
+                        "framePrice"
+                    )
+                    ?.value
+                    .trim();
+
+
+            const tagline =
+                document
+                    .getElementById(
+                        "frameTagline"
+                    )
+                    ?.value
+                    .trim();
+
+
+            const description =
+                document
+                    .getElementById(
+                        "frameDescription"
+                    )
+                    ?.value
+                    .trim();
+
+
+            if (
+                !name ||
+                !price ||
+                !tagline ||
+                !description
+            ) {
+
+                showMessage(
+                    "Complete all frame information before uploading.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            uploadBtn.disabled =
+                true;
+
+
+            progressContainer.classList.remove(
+                "hidden"
+            );
+
+
+            progressStatus.textContent =
+                "Uploading image...";
+
+
+            progressPercent.textContent =
+                "0%";
+
+
+            progressFill.style.width =
+                "10%";
+
+
+            try {
+
+                // ------------------------------------------------
+                // CLOUDINARY
+                // ------------------------------------------------
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "file",
+                    file
+                );
+
+
+                formData.append(
+                    "upload_preset",
+                    CLOUDINARY_UPLOAD_PRESET
+                );
+
+
+                formData.append(
+                    "folder",
+                    "portfolio/frames"
+                );
+
+
+                progressFill.style.width =
+                    "35%";
+
+
+                progressPercent.textContent =
+                    "35%";
+
+
+                const response =
+                    await fetch(
+                        CLOUDINARY_UPLOAD_URL,
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    const errorText =
+                        await response.text();
+
+
+                    throw new Error(
+                        `Cloudinary upload failed: ${errorText}`
+                    );
+                }
+
+
+                const cloudinaryData =
+                    await response.json();
+
+
+                const imageURL =
+                    cloudinaryData.secure_url;
+
+
+                progressFill.style.width =
+                    "70%";
+
+
+                progressPercent.textContent =
+                    "70%";
+
+
+                progressStatus.textContent =
+                    "Saving frame...";
+
+
+                // ------------------------------------------------
+                // FIRESTORE
+                // ------------------------------------------------
+
+                await addDoc(
+                    collection(
+                        db,
+                        "frames"
+                    ),
+                    {
+
+                        name,
+
+                        price,
+
+                        tagline,
+
+                        description,
+
+                        imageURL,
+
+                        cloudinaryPublicId:
+                            cloudinaryData.public_id ||
+                            "",
+
+                        createdAt:
+                            serverTimestamp(),
+
+                        createdBy:
+                            user.uid
+
+                    }
+                );
+
+
+                // ------------------------------------------------
+                // SUCCESS
+                // ------------------------------------------------
+
+                progressFill.style.width =
+                    "100%";
+
+
+                progressPercent.textContent =
+                    "100%";
+
+
+                progressStatus.textContent =
+                    "Complete";
+
+
+                showMessage(
+                    "Frame uploaded successfully.",
+                    "success"
+                );
+
+
+                frameForm.reset();
+
+
+                selectedFile.textContent =
+                    "No image selected";
+
+
+                imagePreview.classList.add(
+                    "hidden"
+                );
+
+
+                previewImage.src =
+                    "";
+
+
+                await loadFrames();
+
+
+            } catch (error) {
+
+                showMessage(
+                    getErrorMessage(error),
+                    "error"
+                );
+
+
+            } finally {
+
+                setTimeout(
+                    () => {
+
+                        uploadBtn.disabled =
+                            false;
+
+
+                        progressContainer.classList.add(
+                            "hidden"
+                        );
+
+
+                        progressFill.style.width =
+                            "0%";
+
+
+                        progressPercent.textContent =
+                            "0%";
+
+
+                        progressStatus.textContent =
+                            "Preparing...";
+
+                    },
+                    900
+                );
+            }
+
+        }
+    );
+}
+
+
+// ============================================================
+// LOGOUT
+// ============================================================
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener(
+        "click",
+        async () => {
+
+            try {
+
+                await signOut(
+                    auth
+                );
+
+            } catch (error) {
+
+                showMessage(
+                    getErrorMessage(error),
+                    "error"
+                );
+
+            }
+
+        }
+    );
+}
+
+
+// ============================================================
+// AUTH
+// ============================================================
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+        if (!user) {
+
+            window.location.href =
+                "./login.html";
+
+            return;
+        }
+
+
+        if (adminEmail) {
+
+            adminEmail.textContent =
+                user.email ||
+                "Authenticated admin";
+        }
+
+
+        await loadFrames();
+
+    }
+);

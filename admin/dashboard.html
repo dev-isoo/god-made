@@ -1,1112 +1,747 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>GODMADE — Admin Dashboard</title>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-
-        body {
-            min-height: 100vh;
-            background: #08080d;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-
-
-        /* =========================================
-           HEADER
-        ========================================= */
-
-        header {
-            height: 75px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 35px;
-
-            background: #11111a;
-
-            border-bottom: 1px solid #292936;
-
-            position: sticky;
-            top: 0;
-
-            z-index: 100;
-        }
-
-
-        .logo {
-            font-size: 25px;
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
-
-
-        .logo span {
-            color: #a855f7;
-        }
-
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-
-        .admin-email {
-            color: #aaa;
-            font-size: 14px;
-        }
-
-
-        .logout-btn {
-            border: none;
-
-            background: #252531;
-
-            color: white;
-
-            padding: 10px 18px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            font-weight: 600;
-        }
-
-
-        .logout-btn:hover {
-            background: #333342;
-        }
-
-
-        /* =========================================
-           MAIN
-        ========================================= */
-
-        main {
-            width: 92%;
-            max-width: 1200px;
-
-            margin: 40px auto;
-        }
-
-
-        .page-title {
-            margin-bottom: 30px;
-        }
-
-
-        .page-title h1 {
-            font-size: 34px;
-            margin-bottom: 8px;
-        }
-
-
-        .page-title p {
-            color: #999;
-        }
-
-
-        /* =========================================
-           DASHBOARD GRID
-        ========================================= */
-
-        .dashboard-grid {
-            display: grid;
-
-            grid-template-columns: 420px 1fr;
-
-            gap: 30px;
-
-            align-items: start;
-        }
-
-
-        /* =========================================
-           CARDS
-        ========================================= */
-
-        .card {
-            background: #14141d;
-
-            border: 1px solid #292936;
-
-            border-radius: 15px;
-
-            padding: 25px;
-        }
-
-
-        .card h2 {
-            font-size: 21px;
-
-            margin-bottom: 25px;
-        }
-
-
-        /* =========================================
-           FORM
-        ========================================= */
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-
-        label {
-            display: block;
-
-            margin-bottom: 8px;
-
-            font-size: 14px;
-
-            color: #ddd;
-
-            font-weight: 600;
-        }
-
-
-        input,
-        textarea {
-
-            width: 100%;
-
-            background: #0d0d14;
-
-            border: 1px solid #33333f;
-
-            color: white;
-
-            border-radius: 8px;
-
-            padding: 13px;
-
-            font-size: 15px;
-
-            outline: none;
-        }
-
-
-        input:focus,
-        textarea:focus {
-
-            border-color: #8b5cf6;
-        }
-
-
-        textarea {
-
-            min-height: 110px;
-
-            resize: vertical;
-        }
-
-
-        /* =========================================
-           IMAGE UPLOAD BOX
-        ========================================= */
-
-        .file-upload {
-
-            position: relative;
-
-            display: block;
-
-            border: 2px dashed #3b3b49;
-
-            border-radius: 10px;
-
-            padding: 25px 15px;
-
-            text-align: center;
-
-            cursor: pointer;
-
-            transition: 0.2s;
-
-            min-height: 170px;
-
-            overflow: hidden;
-        }
-
-
-        .file-upload:hover {
-
-            border-color: #8b5cf6;
-
-            background: #171720;
-        }
-
-
-        /*
-           IMPORTANT:
-
-           The file input is invisible,
-           but it covers the entire upload box.
-
-           This makes clicking anywhere inside
-           the box open the Windows file picker.
-        */
-
-        .file-upload input[type="file"] {
-
-            position: absolute;
-
-            inset: 0;
-
-            width: 100%;
-
-            height: 100%;
-
-            opacity: 0;
-
-            cursor: pointer;
-
-            z-index: 20;
-
-            padding: 0;
-
-            border: none;
-        }
-
-
-        .upload-icon {
-
-            font-size: 35px;
-
-            margin-bottom: 10px;
-
-            pointer-events: none;
-        }
-
-
-        .file-text {
-
-            color: #aaa;
-
-            font-size: 14px;
-
-            pointer-events: none;
-        }
-
-
-        .selected-file {
-
-            margin-top: 10px;
-
-            color: #a855f7;
-
-            font-size: 14px;
-
-            word-break: break-word;
-
-            pointer-events: none;
-        }
-
-
-        /* =========================================
-           IMAGE PREVIEW
-        ========================================= */
-
-        .image-preview {
-
-            display: none;
-
-            margin-top: 15px;
-
-            border-radius: 10px;
-
-            overflow: hidden;
-
-            background: #09090e;
-
-            border: 1px solid #292936;
-        }
-
-
-        .image-preview img {
-
-            width: 100%;
-
-            max-height: 280px;
-
-            object-fit: contain;
-
-            display: block;
-        }
-
-
-        /* =========================================
-           UPLOAD BUTTON
-        ========================================= */
-
-        .upload-btn {
-
-            width: 100%;
-
-            padding: 14px;
-
-            border: none;
-
-            border-radius: 8px;
-
-            background: linear-gradient(
-                90deg,
-                #7c3aed,
-                #ec4899
-            );
-
-            color: white;
-
-            font-size: 16px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            margin-top: 5px;
-        }
-
-
-        .upload-btn:hover {
-
-            opacity: 0.9;
-        }
-
-
-        .upload-btn:disabled {
-
-            opacity: 0.5;
-
-            cursor: not-allowed;
-        }
-
-
-        /* =========================================
-           PROGRESS
-        ========================================= */
-
-        .progress-container {
-
-            display: none;
-
-            margin-top: 18px;
-        }
-
-
-        .progress-text {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            color: #aaa;
-
-            font-size: 13px;
-
-            margin-bottom: 7px;
-        }
-
-
-        .progress-bar {
-
-            width: 100%;
-
-            height: 8px;
-
-            background: #292936;
-
-            border-radius: 10px;
-
-            overflow: hidden;
-        }
-
-
-        .progress-fill {
-
-            width: 0%;
-
-            height: 100%;
-
-            background: linear-gradient(
-                90deg,
-                #7c3aed,
-                #ec4899
-            );
-
-            transition: width 0.2s;
-        }
-
-
-        /* =========================================
-           MESSAGES
-        ========================================= */
-
-        .message {
-
-            margin-top: 15px;
-
-            padding: 12px;
-
-            border-radius: 7px;
-
-            display: none;
-
-            font-size: 14px;
-
-            line-height: 1.5;
-        }
-
-
-        .message.success {
-
-            display: block;
-
-            background: rgba(
-                34,
-                197,
-                94,
-                0.12
-            );
-
-            color: #4ade80;
-
-            border: 1px solid rgba(
-                34,
-                197,
-                94,
-                0.3
-            );
-        }
-
-
-        .message.error {
-
-            display: block;
-
-            background: rgba(
-                239,
-                68,
-                68,
-                0.12
-            );
-
-            color: #f87171;
-
-            border: 1px solid rgba(
-                239,
-                68,
-                68,
-                0.3
-            );
-        }
-
-
-        /* =========================================
-           FRAMES LIST
-        ========================================= */
-
-        .frames-list {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 18px;
-        }
-
-
-        .frame-item {
-
-            background: #0d0d14;
-
-            border: 1px solid #292936;
-
-            border-radius: 12px;
-
-            overflow: hidden;
-        }
-
-
-        .frame-item-image {
-
-            width: 100%;
-
-            height: 190px;
-
-            background: #050509;
-        }
-
-
-        .frame-item-image img {
-
-            width: 100%;
-
-            height: 100%;
-
-            object-fit: cover;
-
-            display: block;
-        }
-
-
-        .frame-item-info {
-
-            padding: 15px;
-        }
-
-
-        .frame-item-info h3 {
-
-            font-size: 17px;
-
-            margin-bottom: 6px;
-        }
-
-
-        .frame-item-price {
-
-            color: #a855f7;
-
-            font-weight: 700;
-
-            margin-bottom: 7px;
-        }
-
-
-        .frame-item-tagline {
-
-            color: #ddd;
-
-            font-size: 13px;
-
-            margin-bottom: 8px;
-        }
-
-
-        .frame-item-description {
-
-            color: #999;
-
-            font-size: 13px;
-
-            line-height: 1.5;
-
-            margin-bottom: 15px;
-        }
-
-
-        /* =========================================
-           DELETE
-        ========================================= */
-
-        .delete-btn {
-
-            width: 100%;
-
-            border: 1px solid #5c2525;
-
-            background: #241313;
-
-            color: #ff7777;
-
-            padding: 9px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-        }
-
-
-        .delete-btn:hover {
-
-            background: #351818;
-        }
-
-
-        /* =========================================
-           EMPTY / LOADING
-        ========================================= */
-
-        .empty,
-        .loading {
-
-            color: #777;
-
-            text-align: center;
-
-            padding: 40px 10px;
-
-            grid-column: 1 / -1;
-        }
-
-
-        /* =========================================
-           RESPONSIVE
-        ========================================= */
-
-        @media (max-width: 900px) {
-
-            .dashboard-grid {
-
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-
-        @media (max-width: 600px) {
-
-            header {
-
-                padding: 0 15px;
-            }
-
-
-            .admin-email {
-
-                display: none;
-            }
-
-
-            main {
-
-                width: 94%;
-
-                margin: 25px auto;
-            }
-
-
-            .page-title h1 {
-
-                font-size: 27px;
-            }
-
-
-            .card {
-
-                padding: 18px;
-            }
-
-
-            .frames-list {
-
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-    </style>
-
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GODMADE — Admin Dashboard</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          moss: '#628B48',
+          leaf: '#6AB547',
+          cream: '#FFE8C2',
+          clay: '#F0A868',
+          umber: '#362C28',
+        },
+
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          sans: ['"Inter"', 'system-ui', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+>
+
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 
 <style>
-.file-upload {
-  position: relative;
-  display: block;
-  border: 2px dashed #3b3b49;
-  border-radius: 10px;
-  padding: 25px 15px;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.2s;
-  min-height: 170px;
-}
 
-.file-upload:hover {
-  border-color: #8b5cf6;
-  background: #171720;
-}
+  /* =========================================================
+     PAGE
+  ========================================================= */
 
-.file-upload input[type="file"] {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 10;
-}
+  body {
+    background-color: #FFE8C2;
 
-.upload-icon {
-  font-size: 35px;
-  margin-bottom: 10px;
-  pointer-events: none;
-}
+    background-image:
+      radial-gradient(
+        circle at 90% 0%,
+        rgba(98,139,72,0.10) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 5% 90%,
+        rgba(98,139,72,0.08) 0%,
+        transparent 45%
+      );
 
-.file-text {
-  color: #aaa;
-  font-size: 14px;
-  pointer-events: none;
-}
+    padding-top: 76px;
+  }
 
-.selected-file {
-  margin-top: 10px;
-  color: #a855f7;
-  font-size: 14px;
-  word-break: break-word;
-  pointer-events: none;
-}
 
-.image-preview {
-  display: none;
-  margin-top: 15px;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #09090e;
-  border: 1px solid #292936;
-}
+  /* =========================================================
+     GRAIN
+  ========================================================= */
 
-.image-preview img {
-  width: 100%;
-  max-height: 280px;
-  object-fit: contain;
-  display: block;
-}
+  .grain {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    opacity: 0.04;
+
+    mix-blend-mode: multiply;
+
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+
+  /* =========================================================
+     INPUTS
+  ========================================================= */
+
+  .field-input {
+    background: #FFE8C2;
+  }
+
+  .field-input:focus {
+    box-shadow: 0 0 0 2px #628B47;
+    border-color: #628B47 !important;
+  }
+
+
+  /* =========================================================
+     UPLOAD AREA
+  ========================================================= */
+
+  .upload-box {
+    position: relative;
+
+    border: 1.5px dashed rgba(98,139,72,0.5);
+
+    background: #FFE8C2;
+
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .upload-box.drag-over,
+  .upload-box:hover {
+    border-color: #628B47;
+
+    box-shadow:
+      0 0 0 3px rgba(98,139,72,0.12);
+  }
+
+  .upload-box input[type="file"] {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+
+    cursor: pointer;
+
+    z-index: 20;
+  }
+
+
+  /* =========================================================
+     UPLOAD PROGRESS
+  ========================================================= */
+
+  .exposure-track {
+    width: 100%;
+
+    height: 5px;
+
+    background: rgba(54,44,40,0.10);
+
+    border-radius: 2px;
+
+    overflow: hidden;
+  }
+
+  .exposure-fill {
+    height: 100%;
+
+    width: 0%;
+
+    background: #628B48;
+
+    transition: width 0.25s ease;
+  }
+
+
+  /* =========================================================
+     FRAME CARDS
+  ========================================================= */
+
+  .contact-frame {
+    background: rgba(255,255,255,0.42);
+
+    border:
+      1px solid rgba(54,44,40,0.10);
+
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .contact-frame:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+      0 8px 24px rgba(54,44,40,0.08);
+  }
+
+  .contact-frame img {
+    filter:
+      sepia(0.06)
+      contrast(1.02);
+  }
+
+
+  /* =========================================================
+     DELETE UI
+  ========================================================= */
+
+  .delete-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid rgba(54,44,40,0.18);
+    border-radius: 2px;
+    background: transparent;
+    color: rgba(54,44,40,0.72);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .delete-btn:hover {
+    border-color: #F0A868;
+    background: rgba(240,168,104,0.12);
+    color: #362C28;
+  }
+
+  .delete-confirm-row {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.65rem;
+    padding: 0.65rem;
+    border: 1px solid rgba(240,168,104,0.45);
+    background: rgba(240,168,104,0.10);
+    border-radius: 2px;
+  }
+
+  .delete-confirm-row.active {
+    display: flex;
+  }
+
+  .delete-confirm-cancel {
+    border: 0;
+    background: transparent;
+    color: rgba(54,44,40,0.55);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0.4rem 0.5rem;
+    cursor: pointer;
+  }
+
+  .delete-confirm-cancel:hover {
+    color: #362C28;
+  }
+
+  .delete-confirm-submit {
+    border: 0;
+    background: #F0A868;
+    color: #362C28;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0.4rem 0.75rem;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .delete-confirm-submit:hover {
+    background: #E79A5A;
+  }
+
+
+  /* =========================================================
+     SELECTION
+  ========================================================= */
+
+  ::selection {
+    background: #6AB547;
+
+    color: #FFE8C2;
+  }
 
 </style>
 </head>
 
 
-<body>
+<body class="min-h-screen font-sans text-umber">
+
+<div class="grain"></div>
 
 
-    <!-- =========================================
-         HEADER
-    ========================================== -->
+<!-- =========================================================
+     FIXED HEADER
+========================================================= -->
 
-    <header>
+<header
+  class="fixed top-0 left-0 right-0 z-50 bg-cream border-b border-umber/10 shadow-sm"
+>
 
-        <div class="logo">
+  <div
+    class="max-w-[1200px] mx-auto px-6 sm:px-8 h-[76px] flex items-center justify-between"
+  >
 
-            GOD<span>MADE</span>
+    <div
+      class="font-serif font-semibold text-[22px] tracking-[0.08em] text-umber"
+    >
+      GOD<span class="text-moss">MADE</span>
+    </div>
+
+
+    <div class="flex items-center gap-4">
+
+      <div
+        id="adminEmail"
+        class="hidden sm:block text-[13px] text-umber/50 tracking-wide"
+      >
+        Checking login...
+      </div>
+
+
+      <button
+        id="logoutBtn"
+        type="button"
+        class="border border-umber/20 hover:border-umber/40 hover:bg-umber/5 text-umber text-[13px] font-medium tracking-wide px-4 py-2 rounded-sm transition-colors"
+      >
+        Log out
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main
+  class="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-8 py-10 sm:py-12"
+>
+
+
+  <!-- PAGE INTRO -->
+
+  <div class="mb-10">
+
+    <p
+      class="text-[12px] tracking-[0.35em] uppercase text-moss mb-2"
+    >
+      Darkroom
+    </p>
+
+    <h1
+      class="font-serif font-semibold text-[36px] sm:text-[42px] text-umber leading-tight"
+    >
+      Dashboard
+    </h1>
+
+    <p
+      class="text-umber/55 text-[15px] mt-2"
+    >
+      Develop new frames and manage the collection.
+    </p>
+
+  </div>
+
+
+
+  <div class="flex flex-col gap-8">
+
+
+    <!-- =====================================================
+         YOUR FRAMES
+    ====================================================== -->
+
+    <section
+      class="bg-white/40 border border-umber/12 rounded-sm p-7 sm:p-8"
+    >
+
+      <div class="flex items-center gap-3 mb-7">
+
+        <h2
+          class="font-serif text-[21px] text-umber"
+        >
+          Your Frames
+        </h2>
+
+        <div
+          class="h-px flex-1 bg-umber/10"
+        ></div>
+
+        <span
+          class="text-[11px] tracking-[0.2em] uppercase text-moss/70"
+          id="frameCount"
+        >
+          Contact sheet
+        </span>
+
+      </div>
+
+
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+        id="framesList"
+      ></div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ADD FRAME
+    ====================================================== -->
+
+    <section
+      class="bg-white/40 border border-umber/12 rounded-sm p-7 sm:p-8"
+    >
+
+      <div class="flex items-center gap-3 mb-7">
+
+        <span
+          class="text-[11px] tracking-[0.3em] uppercase text-moss font-semibold"
+        >
+          NEW
+        </span>
+
+        <div
+          class="h-px flex-1 bg-umber/10"
+        ></div>
+
+        <h2
+          class="font-serif text-[21px] text-umber"
+        >
+          Add Frame
+        </h2>
+
+      </div>
+
+
+      <!-- FORM -->
+
+      <form
+        id="frameForm"
+        class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-5"
+        novalidate
+      >
+
+
+        <!-- FRAME NAME -->
+
+        <div>
+
+          <label
+            for="frameName"
+            class="block text-[11px] tracking-[0.15em] uppercase text-umber/60 mb-2"
+          >
+            Frame name
+          </label>
+
+          <input
+            type="text"
+            id="frameName"
+            placeholder="e.g. The Last Light"
+            required
+            class="field-input w-full px-4 py-3 rounded-sm border border-umber/20 text-umber placeholder-umber/30 text-[15px] outline-none transition-shadow"
+          >
 
         </div>
 
 
-        <div class="header-right">
+
+        <!-- PRICE -->
+
+        <div>
+
+          <label
+            for="framePrice"
+            class="block text-[11px] tracking-[0.15em] uppercase text-umber/60 mb-2"
+          >
+            Price (₦)
+          </label>
+
+          <input
+            type="number"
+            id="framePrice"
+            placeholder="50000"
+            min="0"
+            required
+            class="field-input w-full px-4 py-3 rounded-sm border border-umber/20 text-umber placeholder-umber/30 text-[15px] outline-none transition-shadow"
+          >
+
+        </div>
+
+
+
+        <!-- TAGLINE -->
+
+        <div class="lg:col-span-2">
+
+          <label
+            for="frameTagline"
+            class="block text-[11px] tracking-[0.15em] uppercase text-umber/60 mb-2"
+          >
+            Short description
+          </label>
+
+          <input
+            type="text"
+            id="frameTagline"
+            placeholder="A story of survival."
+            required
+            class="field-input w-full px-4 py-3 rounded-sm border border-umber/20 text-umber placeholder-umber/30 text-[15px] outline-none transition-shadow"
+          >
+
+        </div>
+
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="lg:col-span-2">
+
+          <label
+            for="frameDescription"
+            class="block text-[11px] tracking-[0.15em] uppercase text-umber/60 mb-2"
+          >
+            Full description
+          </label>
+
+          <textarea
+            id="frameDescription"
+            placeholder="Tell the story behind this photograph..."
+            required
+            class="field-input w-full px-4 py-3 rounded-sm border border-umber/20 text-umber placeholder-umber/30 text-[15px] outline-none transition-shadow min-h-[110px] resize-y"
+          ></textarea>
+
+        </div>
+
+
+
+        <!-- =================================================
+             IMAGE UPLOAD
+        ================================================== -->
+
+        <div class="lg:col-span-2">
+
+          <label
+            for="frameImage"
+            class="block text-[11px] tracking-[0.15em] uppercase text-umber/60 mb-2"
+          >
+            Frame image
+          </label>
+
+
+          <div
+            class="upload-box rounded-sm px-4 py-8 text-center min-h-[160px] flex flex-col items-center justify-center"
+            id="fileUploadBox"
+          >
+
+            <input
+              type="file"
+              id="frameImage"
+              accept="image/jpeg,image/png,image/webp,image/jpg"
+              required
+            >
+
+
+            <!-- STATIC UPLOAD ICON -->
+
+            <svg
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="mb-3 text-moss pointer-events-none"
+              aria-hidden="true"
+            >
+
+              <path
+                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+              ></path>
+
+              <polyline
+                points="17 8 12 3 7 8"
+              ></polyline>
+
+              <line
+                x1="12"
+                y1="3"
+                x2="12"
+                y2="15"
+              ></line>
+
+            </svg>
+
 
             <div
-                class="admin-email"
-                id="adminEmail"
+              class="text-[13px] text-umber/55 pointer-events-none"
             >
-                Checking login...
+              Click to choose an image, or drag one in
             </div>
 
 
-            <button
-                class="logout-btn"
-                id="logoutBtn"
-                type="button"
+            <div
+              class="text-[13px] text-moss font-medium mt-2 pointer-events-none"
+              id="selectedFile"
             >
-                Logout
-            </button>
+              No image selected
+            </div>
+
+          </div>
+
+
+          <!-- IMAGE PREVIEW -->
+
+          <div
+            class="hidden mt-3 rounded-sm overflow-hidden border border-umber/15 bg-umber/5"
+            id="imagePreview"
+          >
+
+            <img
+              id="previewImage"
+              src=""
+              alt="Image preview"
+              class="w-full max-h-[280px] object-contain block"
+            >
+
+          </div>
 
         </div>
 
-    </header>
 
 
-    <!-- =========================================
-         MAIN
-    ========================================== -->
+        <!-- =================================================
+             UPLOAD BUTTON
+        ================================================== -->
 
-    <main>
+        <button
+          type="submit"
+          id="uploadBtn"
+          class="lg:col-span-2 w-full mt-1 py-3 rounded-sm bg-moss hover:bg-leaf disabled:opacity-50 disabled:cursor-not-allowed text-cream font-semibold text-[14px] tracking-[0.05em] uppercase transition-colors"
+        >
+          Upload &amp; add frame
+        </button>
 
 
-        <div class="page-title">
 
-            <h1>
-                Admin Dashboard
-            </h1>
+        <!-- =================================================
+             PROGRESS
+        ================================================== -->
 
-            <p>
-                Manage your GODMADE frames and photography collection.
-            </p>
+        <div
+          class="hidden lg:col-span-2"
+          id="progressContainer"
+        >
+
+          <div
+            class="flex justify-between text-[12px] text-umber/55 mb-2"
+          >
+
+            <span id="progressStatus">
+              Preparing...
+            </span>
+
+            <span id="progressPercent">
+              0%
+            </span>
+
+          </div>
+
+
+          <div class="exposure-track">
+
+            <div
+              class="exposure-fill"
+              id="progressFill"
+            ></div>
+
+          </div>
 
         </div>
 
 
-        <div class="dashboard-grid">
 
+        <!-- =================================================
+             MESSAGE
+        ================================================== -->
 
-            <!-- =========================================
-                 ADD FRAME
-            ========================================== -->
+        <div
+          id="message"
+          class="hidden lg:col-span-2 text-[13px] leading-relaxed rounded-sm px-4 py-3"
+        ></div>
 
-            <section class="card">
+      </form>
 
-                <h2>
-                    Add New Frame
-                </h2>
+    </section>
 
+  </div>
 
-                <form id="frameForm">
+</main>
 
 
-                    <!-- FRAME NAME -->
 
-                    <div class="form-group">
+<!-- =========================================================
+     ENTRANCE ANIMATION ONLY
+========================================================= -->
 
-                        <label for="frameName">
-                            Frame Name
-                        </label>
+<script>
 
-                        <input
-                            type="text"
-                            id="frameName"
-                            placeholder="e.g. The Last Light"
-                            required
-                        >
+  anime.timeline({
+    easing: 'easeOutExpo'
+  })
 
-                    </div>
+  .add({
+    targets: 'main > div:first-child',
+    opacity: [0, 1],
+    translateY: [-10, 0],
+    duration: 500,
+  })
 
+  .add({
+    targets: 'main section',
+    opacity: [0, 1],
+    translateY: [16, 0],
+    delay: anime.stagger(120),
+    duration: 600,
+  }, '-=300');
 
-                    <!-- PRICE -->
+</script>
 
-                    <div class="form-group">
 
-                        <label for="framePrice">
-                            Price (₦)
-                        </label>
 
-                        <input
-                            type="number"
-                            id="framePrice"
-                            placeholder="50000"
-                            min="0"
-                            required
-                        >
+<!-- =========================================================
+     ADMIN JAVASCRIPT
+========================================================= -->
 
-                    </div>
-
-
-                    <!-- SHORT DESCRIPTION -->
-
-                    <div class="form-group">
-
-                        <label for="frameTagline">
-                            Short Description
-                        </label>
-
-                        <input
-                            type="text"
-                            id="frameTagline"
-                            placeholder="A story of survival."
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- FULL DESCRIPTION -->
-
-                    <div class="form-group">
-
-                        <label for="frameDescription">
-                            Full Description
-                        </label>
-
-                        <textarea
-                            id="frameDescription"
-                            placeholder="Tell the story behind this photograph..."
-                            required
-                        ></textarea>
-
-                    </div>
-
-
-                    <!-- =====================================
-                         FRAME IMAGE
-                    ====================================== -->
-
-                    <div class="form-group">
-
-                        <label for="frameImage">
-                            Frame Image
-                        </label>
-
-
-                        <div
-                            class="file-upload"
-                            id="fileUploadBox"
-                        >
-
-
-                            <!-- REAL FILE INPUT -->
-
-                            <input
-                                type="file"
-                                id="frameImage"
-                                accept="image/jpeg,image/png,image/webp,image/jpg"
-                                required
-                            >
-
-
-                            <div class="upload-icon">
-                                📷
-                            </div>
-
-
-                            <div class="file-text">
-                                Click to choose an image from your device
-                            </div>
-
-
-                            <div
-                                class="selected-file"
-                                id="selectedFile"
-                            >
-                                No image selected
-                            </div>
-
-
-                        </div>
-
-
-                        <!-- IMAGE PREVIEW -->
-
-                        <div
-                            class="image-preview"
-                            id="imagePreview"
-                        >
-
-                            <img
-                                id="previewImage"
-                                src=""
-                                alt="Image Preview"
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- =====================================
-                         UPLOAD BUTTON
-                    ====================================== -->
-
-                    <button
-                        type="submit"
-                        class="upload-btn"
-                        id="uploadBtn"
-                    >
-                        Upload &amp; Add Frame
-                    </button>
-
-
-                    <!-- =====================================
-                         PROGRESS
-                    ====================================== -->
-
-                    <div
-                        class="progress-container"
-                        id="progressContainer"
-                    >
-
-                        <div class="progress-text">
-
-                            <span id="progressStatus">
-                                Preparing...
-                            </span>
-
-                            <span id="progressPercent">
-                                0%
-                            </span>
-
-                        </div>
-
-
-                        <div class="progress-bar">
-
-                            <div
-                                class="progress-fill"
-                                id="progressFill"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- =====================================
-                         MESSAGE
-                    ====================================== -->
-
-                    <div
-                        class="message"
-                        id="message"
-                    ></div>
-
-
-                </form>
-
-            </section>
-
-
-            <!-- =========================================
-                 EXISTING FRAMES
-            ========================================== -->
-
-            <section class="card">
-
-                <h2>
-                    Your Frames
-                </h2>
-
-
-                <div
-                    class="frames-list"
-                    id="framesList"
-                >
-
-                    <div class="loading">
-                        Loading frames...
-                    </div>
-
-                </div>
-
-            </section>
-
-
-        </div>
-
-    </main>
-
-
-    <!-- =========================================
-         ADMIN JAVASCRIPT
-    ========================================== -->
-
-    <script
-        type="module"
-        src="./admin.js"
-    ></script>
+<script
+  type="module"
+  src="./admin.js"
+></script>
 
 
 </body>
-
 </html>
