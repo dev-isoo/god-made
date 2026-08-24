@@ -1,4 +1,4 @@
-import { db } from "./firebase-config.js";
+ import { db } from "./firebase-config.js";
 
 import {
     collection,
@@ -15,6 +15,27 @@ import {
 
 const framesTrack =
     document.getElementById("framesTrack");
+
+const prevBtn =
+    document.getElementById("framesPrev");
+
+const nextBtn =
+    document.getElementById("framesNext");
+
+const carousel =
+    document.querySelector(".frames-carousel");
+
+
+// ==========================================
+// CAROUSEL STATE
+// ==========================================
+
+let currentIndex = 0;
+let cardWidth = 0;
+let visibleCards = 1;
+let maxIndex = 0;
+let autoplayTimer = null;
+const AUTOPLAY_DELAY = 4000; // ms between auto slides
 
 
 // ==========================================
@@ -64,6 +85,7 @@ async function loadFrames() {
                 </div>
             `;
 
+            stopAutoplay();
             return;
         }
 
@@ -269,6 +291,13 @@ async function loadFrames() {
         });
 
 
+        // ==========================================
+        // CARDS ARE NOW IN THE DOM — START CAROUSEL
+        // ==========================================
+
+        initCarousel();
+
+
     } catch (error) {
 
         console.error(
@@ -293,7 +322,157 @@ async function loadFrames() {
 
         `;
 
+        stopAutoplay();
+
     }
+
+}
+
+
+// ==========================================
+// CAROUSEL — NAVIGATION + AUTOPLAY
+// ==========================================
+
+function initCarousel() {
+
+    if (!framesTrack || !prevBtn || !nextBtn) return;
+
+    const cards = Array.from(
+        framesTrack.querySelectorAll(".frame-card")
+    );
+
+    if (cards.length === 0) {
+        stopAutoplay();
+        return;
+    }
+
+    currentIndex = 0;
+    measure(cards);
+
+    // Avoid stacking duplicate listeners if loadFrames ever re-runs
+    prevBtn.onclick = () => {
+        prev(cards);
+        startAutoplay(cards);
+    };
+
+    nextBtn.onclick = () => {
+        next(cards);
+        startAutoplay(cards);
+    };
+
+    if (carousel) {
+        carousel.onmouseenter = stopAutoplay;
+        carousel.onmouseleave = () => startAutoplay(cards);
+        carousel.ontouchstart = stopAutoplay;
+        carousel.ontouchend = () => startAutoplay(cards);
+    }
+
+    window.onresize = debounce(() => measure(cards), 200);
+
+    startAutoplay(cards);
+
+}
+
+
+function measure(cards) {
+
+    const card = cards[0];
+
+    const style =
+        window.getComputedStyle(framesTrack);
+
+    const gap =
+        parseFloat(style.columnGap || style.gap || 0) || 0;
+
+    cardWidth =
+        card.getBoundingClientRect().width + gap;
+
+    const containerWidth = carousel
+        ? carousel.getBoundingClientRect().width
+        : framesTrack.parentElement.getBoundingClientRect().width;
+
+    visibleCards =
+        Math.max(1, Math.floor(containerWidth / cardWidth));
+
+    maxIndex =
+        Math.max(0, cards.length - visibleCards);
+
+    if (currentIndex > maxIndex) currentIndex = maxIndex;
+
+    goTo(currentIndex, false);
+
+}
+
+
+function goTo(index, smooth = true) {
+
+    currentIndex =
+        Math.min(Math.max(index, 0), maxIndex);
+
+    framesTrack.style.transition =
+        smooth ? "transform 0.5s ease" : "none";
+
+    framesTrack.style.transform =
+        `translateX(-${currentIndex * cardWidth}px)`;
+
+    prevBtn.classList.toggle("is-start", currentIndex === 0);
+    nextBtn.classList.toggle("is-end", currentIndex === maxIndex);
+
+}
+
+
+function next(cards) {
+
+    if (currentIndex >= maxIndex) {
+        goTo(0); // loop back to start
+    } else {
+        goTo(currentIndex + 1);
+    }
+
+}
+
+
+function prev(cards) {
+
+    if (currentIndex <= 0) {
+        goTo(maxIndex); // loop to end
+    } else {
+        goTo(currentIndex - 1);
+    }
+
+}
+
+
+function startAutoplay(cards) {
+
+    stopAutoplay();
+
+    autoplayTimer = setInterval(
+        () => next(cards),
+        AUTOPLAY_DELAY
+    );
+
+}
+
+
+function stopAutoplay() {
+
+    if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+    }
+
+}
+
+
+function debounce(fn, delay) {
+
+    let timer;
+
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    };
 
 }
 
@@ -460,6 +639,8 @@ function openFrameModal(frame) {
     document.body.style.overflow =
         "hidden";
 
+    stopAutoplay();
+
 }
 
 
@@ -487,6 +668,14 @@ function closeFrameModal() {
 
     document.body.style.overflow =
         "";
+
+    const cards = Array.from(
+        framesTrack.querySelectorAll(".frame-card")
+    );
+
+    if (cards.length > 0) {
+        startAutoplay(cards);
+    }
 
 }
 
