@@ -1676,35 +1676,113 @@ button {
     grid-template-columns: 1fr 1fr;
   }
 }
+ @media (max-width: 768px) {
 
-@media (max-width: 768px) {
+  /* ================================
+     MOBILE NAVIGATION
+  ================================= */
+
+  .navbar {
+    position: relative;
+  }
+
   .nav-links {
     position: fixed;
     top: 0;
     right: -100%;
+
     width: 75%;
     max-width: 320px;
     height: 100vh;
+
     background: var(--color-bg-alt);
+
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     gap: 30px;
-    transition: right var(--transition);
-    box-shadow: -10px 0 30px rgba(0,0,0,0.4);
+
+    padding: 80px 20px;
+
+    transition: right 0.35s ease;
+
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
+
+    z-index: 9998;
   }
 
+  /* OPEN MOBILE MENU */
   .nav-links.active {
     right: 0;
   }
 
-  .hamburger {
-    display: flex;
+  /* NAVIGATION LINKS */
+  .nav-links .nav-link {
+    display: block;
+    font-size: 18px;
+    text-decoration: none;
   }
 
+  /* HAMBURGER */
+  .hamburger {
+    display: flex;
+    position: relative;
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 5px;
+
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    background: transparent;
+    border: none;
+
+    cursor: pointer;
+
+    z-index: 10000;
+  }
+
+  .hamburger span {
+    display: block;
+
+    width: 26px;
+    height: 2px;
+
+    background: currentColor;
+
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  /* HAMBURGER → X */
+  .hamburger.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* HIDE BOOK NOW ON MOBILE */
   .btn-nav {
     display: none;
   }
+
+  /* ================================
+     OTHER MOBILE SECTIONS
+  ================================= */
 
   .services-grid {
     grid-template-columns: 1fr;
@@ -1728,7 +1806,9 @@ button {
   }
 }
 
+
 @media (max-width: 480px) {
+
   .gallery-grid {
     grid-template-columns: 1fr;
   }
@@ -1742,4 +1822,5 @@ button {
     bottom: -20px;
     right: -15px;
   }
+
 }
