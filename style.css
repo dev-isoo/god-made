@@ -1013,36 +1013,21 @@ button {
 /* ================================
    MODAL CONTENT
 ================================ */
-
-.frame-modal-content {
+ .frame-modal-content {
   position: relative;
-
   z-index: 2;
-
   width: min(1000px, 95vw);
-
   max-height: 90vh;
-
-  overflow: auto;
-
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  background: #111118;
-
-  border: 1px solid rgba(255,255,255,0.12);
-
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   border-radius: 18px;
-
-  overflow: hidden;
-
-  transform:
-    translateY(30px)
-    scale(0.96);
-
-  transition:
-    transform 0.35s ease;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #111118;
+  border: 1px solid rgba(255,255,255,0.12);
+  transform: translateY(30px) scale(0.96);
+  transition: transform 0.35s ease;
 }
 
 .frame-modal.active .frame-modal-content {
@@ -1319,20 +1304,17 @@ button {
     max-height: 94vh;
   }
 
-  .frame-modal-image {
-    height: 300px;
-
-    min-height: 300px;
+     .frame-modal-image img {
+    height: 240px;
+    min-height: 240px;
   }
 
-  .frame-modal-image img {
-    height: 300px;
-
-    min-height: 300px;
+   .frame-modal-image {
+    height: 240px;
+    min-height: 240px;
   }
-
   .frame-modal-info {
-    padding: 28px 22px;
+    padding: 24px 20px;
   }
 
 }
